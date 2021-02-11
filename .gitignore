@@ -1,32 +1,21 @@
-# Prerequisites
-*.d
+build/
+build-debug/
+*build/
+*.user
+*.idea
+*~
+bin/lin-x86_64/*
+bin/mac-x86_64/ambf_simulator
+bin-debug/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+*.autosave
 
-# Precompiled Headers
-*.gch
-*.pch
+*.pyc
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+*.bin
 
-# Fortran module files
-*.mod
-*.smod
+*.ipch
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+\.vscode/
+*.blend1
+*.old

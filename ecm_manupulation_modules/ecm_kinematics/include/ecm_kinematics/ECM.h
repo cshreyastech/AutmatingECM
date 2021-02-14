@@ -22,6 +22,7 @@ public:
     Matrix4f computeFK(std::vector<float> joint_pos);
     std::vector<float> computeIK(Matrix4f T_4_0);
     void testIK(const std::vector<float>);
+    Eigen::MatrixXf getJacobian(const std::vector<float> desired_q);
 
     void cleanup();
     ~ECM(void);
@@ -30,6 +31,11 @@ private:
     std::vector<DH *> DH_Vector_;
     const float L_rcc_ = 0.3822;
     const float L_scopelen_ = 0.385495;
+    Matrix4f T_1_0_;
+    Matrix4f T_2_0_;
+    Matrix4f T_3_0_;
+    Matrix4f T_4_0_;
+
 
 
     float dh_params_[4][6] = {
@@ -46,6 +52,7 @@ private:
         {                    0.0,   0.24               },
         { (float) (-175.00 * (M_PI / 180.0)), (float) (175.00 * (M_PI / 180.0))}
     };
+
 
 };
 

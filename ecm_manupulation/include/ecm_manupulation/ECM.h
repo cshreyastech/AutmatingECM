@@ -19,34 +19,36 @@ class ECM
 {
 public:
     ECM();
-    Matrix4f computeFK(std::vector<float> joint_pos);
-    std::vector<float> computeIK(Matrix4f T_4_0);
-    void testIK(const std::vector<float>);
-    Eigen::MatrixXf getJacobian(const std::vector<float> desired_q);
+//    Matrix4f computeFK(std::vector<float> joint_pos);
+//    std::vector<float> computeIK(Matrix4f T_4_0);
+//    void testIK(const std::vector<float>);
+//    Eigen::MatrixXf getJacobian(const std::vector<float> desired_q);
 
     void cleanup();
     ~ECM(void);
 
-private:
-    std::vector<DH *> DH_Vector_;
-    const float L_rcc_ = 0.3822;
-    const float L_scopelen_ = 0.385495;
-    Matrix4f T_1_0_;
-    Matrix4f T_2_0_;
-    Matrix4f T_3_0_;
-    Matrix4f T_4_0_;
+protected:
+    const std::string joint_type_enum_to_str(JointType enumVal);
+
+    std::vector<DH *> DH_Vector;
+    const float L_rcc = 0.3822;
+    const float L_scopelen = 0.385495;
+//    Matrix4f T_1_0_;
+//    Matrix4f T_2_0_;
+//    Matrix4f T_3_0_;
+//    Matrix4f T_4_0_;
 
 
 
-    float dh_params_[4][6] = {
+    float dh_params[4][6] = {
    //     alpha,      a,      theta,                d,                  offset,     joint_type
         { M_PI_2,     0.0,    0.0,                  0.0,                M_PI_2,     0},
         { -M_PI_2,    0.0,    0.0,                  0.0,                -M_PI_2,    0},
-        { M_PI_2,     0.0,    0.0,                  0.0,                -L_rcc_,    1},
-        { 0.0,        0.0,    0.0,                  L_scopelen_,            0.0,    0}
+        { M_PI_2,     0.0,    0.0,                  0.0,                -L_rcc,    1},
+        { 0.0,        0.0,    0.0,                  L_scopelen,            0.0,    0}
     };
 
-    std::vector<std::vector<float>> ECM_JOINT_LIMITS_ = {
+    std::vector<std::vector<float>> ECM_JOINT_LIMITS = {
         {  (float) (-91.96 * (M_PI / 180.0)),  (float) (91.96 * (M_PI / 180.0))},
         {  (float) (-60.00 * (M_PI / 180.0)),  (float) (60.00 * (M_PI / 180.0))},
         {                    0.0,   0.24               },

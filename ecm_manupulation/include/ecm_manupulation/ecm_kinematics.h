@@ -1,4 +1,0 @@
-#ifndef ECM_KINEMATICS_H
-#define ECM_KINEMATICS_H
-
-#endif // ECM_KINEMATICS_H

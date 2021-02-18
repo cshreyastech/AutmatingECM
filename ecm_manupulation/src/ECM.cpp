@@ -4,129 +4,129 @@ ECM::ECM(){
 
 }
 
-const std::string joint_type_enum_to_str(JointType enumVal)
+const std::string ECM::joint_type_enum_to_str(JointType enumVal)
 {
     if (enumVal == JointType::ROTATIONAL) return "ROTATIONAL";
     else if (enumVal == JointType::PRISMATIC) return "PRISMATIC";
 }
 
-Matrix4f ECM::computeFK(std::vector<float> joint_pos) {
-    DH_Vector_.clear();
+//Matrix4f ECM::computeFK(std::vector<float> joint_pos) {
+//    DH_Vector_.clear();
 
-    int joint_pos_n = joint_pos.size();
-    for(int i = 0; i < joint_pos_n; i++)
-        dh_params_[i][2] = joint_pos[i];
+//    int joint_pos_n = joint_pos.size();
+//    for(int i = 0; i < joint_pos_n; i++)
+//        dh_params_[i][2] = joint_pos[i];
 
-    if(joint_pos_n > 2) {
-        dh_params_[2][2] = 0.0;
-        dh_params_[2][3] = joint_pos[2];
-    }
+//    if(joint_pos_n > 2) {
+//        dh_params_[2][2] = 0.0;
+//        dh_params_[2][3] = joint_pos[2];
+//    }
 
-    int row_n = sizeof(dh_params_) / sizeof(dh_params_[0]);
-    for(int row = 0; row < row_n; row++) {
-        DH_Vector_.push_back(new DH(dh_params_[row][0], dh_params_[row][1], dh_params_[row][2], dh_params_[row][3], dh_params_[row][4], joint_type_enum_to_str((JointType)dh_params_[row][5])));
-    }
+//    int row_n = sizeof(dh_params_) / sizeof(dh_params_[0]);
+//    for(int row = 0; row < row_n; row++) {
+//        DH_Vector_.push_back(new DH(dh_params_[row][0], dh_params_[row][1], dh_params_[row][2], dh_params_[row][3], dh_params_[row][4], joint_type_enum_to_str((JointType)dh_params_[row][5])));
+//    }
 
-    T_1_0_ = DH_Vector_[0]->get_trans();
-    Matrix4f T_2_1 = DH_Vector_[1]->get_trans();
-    Matrix4f T_3_2 = DH_Vector_[2]->get_trans();
-    Matrix4f T_4_3 = DH_Vector_[3]->get_trans();
+//    T_1_0_ = DH_Vector_[0]->get_trans();
+//    Matrix4f T_2_1 = DH_Vector_[1]->get_trans();
+//    Matrix4f T_3_2 = DH_Vector_[2]->get_trans();
+//    Matrix4f T_4_3 = DH_Vector_[3]->get_trans();
 
-    T_2_0_ = T_1_0_ * T_2_1;
-    T_3_0_ = T_2_0_ * T_3_2;
-    T_4_0_ = T_3_0_ * T_4_3;
+//    T_2_0_ = T_1_0_ * T_2_1;
+//    T_3_0_ = T_2_0_ * T_3_2;
+//    T_4_0_ = T_3_0_ * T_4_3;
 
-//    std::cout << "T_4_0_FK " << std::endl << T_4_0 << std::endl;
-    if(joint_pos_n == 1) return T_1_0_;
-    if(joint_pos_n == 2) return T_2_0_;
-    if(joint_pos_n == 3) return T_3_0_;
-    if(joint_pos_n == 4) return T_4_0_;
-}
-
-
-std::vector<float> ECM::computeIK(Matrix4f T_4_0) {
-    Utilities utilities;
-
-    Matrix4f T_PinchJoint_4;
-    T_PinchJoint_4 << Matrix4f::Identity();
+////    std::cout << "T_4_0_FK " << std::endl << T_4_0 << std::endl;
+//    if(joint_pos_n == 1) return T_1_0_;
+//    if(joint_pos_n == 2) return T_2_0_;
+//    if(joint_pos_n == 3) return T_3_0_;
+//    if(joint_pos_n == 4) return T_4_0_;
+//}
 
 
-    float j1 = std::atan2(T_4_0(0, 3), -1.0 * T_4_0(2, 3));
+//std::vector<float> ECM::computeIK(Matrix4f T_4_0) {
+//    Utilities utilities;
 
-    float xz_diag = std::sqrt(std::pow(T_4_0(0, 3), 2) + std::pow(T_4_0(2, 3), 2));
-    float j2 = -1 * std::atan2(T_4_0(1, 3), xz_diag);
-
-    float j3 = (T_4_0.block<3, 1>(0, 3)).norm() + (L_rcc_ - L_scopelen_);
-
-    Matrix4f T_4_0_FK = this->computeFK(std::vector<float>{j1, j2, j3});
-
-    Matrix3f R_IK_in_FK = (T_4_0_FK.block<3, 3>(0, 0)).inverse() * (T_4_0.block<3, 3>(0, 0));
-
-    float j4 = utilities.rpy_from_rotation(R_IK_in_FK)[2];
-    return std::vector<float>{j1, j2, j3, j4};
-}
-
-void ECM::testIK(const std::vector<float> desired_q) {
-//    We are going to provide 7 joint values to the PSM FK, the 7th value is ignore for FK purposes but results
-//    in the FK returning us T_7_0 rather than T_6_0. There 7 frame from DH is a fixed frame (no D.O.F)
-
-    Matrix4f T_4_0 = this->computeFK(desired_q);
-    std::cout << "T_4_0 " << std::endl << T_4_0 << std::endl;
-
-    std::vector<float> computed_q = this->computeIK(T_4_0);
+//    Matrix4f T_PinchJoint_4;
+//    T_PinchJoint_4 << Matrix4f::Identity();
 
 
-    std::cout << "desired: " <<  desired_q[0] << ", " <<  desired_q[1] << ", " <<  desired_q[2] << ", " <<  desired_q[3] << std::endl;
-    std::cout << "cal    : " << computed_q[0] << ", " << computed_q[1] << ", " << computed_q[2] << ", " << computed_q[3] << std::endl;
-    std::cout << "diff   : "
-              << std::roundf(desired_q[0] - computed_q[0]) << ", "
-              << std::roundf(desired_q[1] - computed_q[1]) << ", "
-              << std::roundf(desired_q[2] - computed_q[2]) << ", "
-              << std::roundf(desired_q[3] - computed_q[3])
-              << std::endl;
+//    float j1 = std::atan2(T_4_0(0, 3), -1.0 * T_4_0(2, 3));
 
-    Eigen::MatrixXf jacobian = this->getJacobian(desired_q);
+//    float xz_diag = std::sqrt(std::pow(T_4_0(0, 3), 2) + std::pow(T_4_0(2, 3), 2));
+//    float j2 = -1 * std::atan2(T_4_0(1, 3), xz_diag);
 
-    std::cout << "jacobian " << std::endl << jacobian << std::endl;
+//    float j3 = (T_4_0.block<3, 1>(0, 3)).norm() + (L_rcc_ - L_scopelen_);
 
-//    return computed_q;
-}
+//    Matrix4f T_4_0_FK = this->computeFK(std::vector<float>{j1, j2, j3});
 
+//    Matrix3f R_IK_in_FK = (T_4_0_FK.block<3, 3>(0, 0)).inverse() * (T_4_0.block<3, 3>(0, 0));
 
-Eigen::MatrixXf ECM::getJacobian(const std::vector<float> desired_q) {
-    Eigen::MatrixXf jacobian(6, 4);
+//    float j4 = utilities.rpy_from_rotation(R_IK_in_FK)[2];
+//    return std::vector<float>{j1, j2, j3, j4};
+//}
 
-    //Get Angular Velocity from Transformation matrix
-    jacobian.block<3,1>(0, 0) = T_1_0_.block<3,1>(0, 2);
-    jacobian.block<3,1>(0, 1) = T_2_0_.block<3,1>(0, 2);
-    jacobian.block<3,1>(0, 2) = Eigen::Vector3f::Zero();
-    jacobian.block<3,1>(0, 3) = T_4_0_.block<3,1>(0, 2);
+//void ECM::testIK(const std::vector<float> desired_q) {
+////    We are going to provide 7 joint values to the PSM FK, the 7th value is ignore for FK purposes but results
+////    in the FK returning us T_7_0 rather than T_6_0. There 7 frame from DH is a fixed frame (no D.O.F)
+
+//    Matrix4f T_4_0 = this->computeFK(desired_q);
+//    std::cout << "T_4_0 " << std::endl << T_4_0 << std::endl;
+
+//    std::vector<float> computed_q = this->computeIK(T_4_0);
 
 
-    //Get Linear Velocity from Transformation matrix
-    float ct1 = cos(desired_q[0]);
-    float st1 = sin(desired_q[0]);
+//    std::cout << "desired: " <<  desired_q[0] << ", " <<  desired_q[1] << ", " <<  desired_q[2] << ", " <<  desired_q[3] << std::endl;
+//    std::cout << "cal    : " << computed_q[0] << ", " << computed_q[1] << ", " << computed_q[2] << ", " << computed_q[3] << std::endl;
+//    std::cout << "diff   : "
+//              << std::roundf(desired_q[0] - computed_q[0]) << ", "
+//              << std::roundf(desired_q[1] - computed_q[1]) << ", "
+//              << std::roundf(desired_q[2] - computed_q[2]) << ", "
+//              << std::roundf(desired_q[3] - computed_q[3])
+//              << std::endl;
 
-    float ct2 = cos(desired_q[1]);
-    float st2 = sin(desired_q[1]);
+//    Eigen::MatrixXf jacobian = this->getJacobian(desired_q);
 
-    jacobian(3, 0) = ct1 * ct2 * (L_rcc_ - desired_q[2]) + ct1 * ct2 * (L_scopelen_ + desired_q[2]);
-    jacobian(4, 0) = 0.0;
-    jacobian(5, 0) = st1 * ct2 * (L_rcc_ - desired_q[2]) + st1 * ct2 * (L_scopelen_ + desired_q[2]);
+//    std::cout << "jacobian " << std::endl << jacobian << std::endl;
 
-    jacobian(3, 1) = -st1 * st2 * (L_rcc_ - desired_q[2]) - st1 * st2 * (L_scopelen_ + desired_q[2]);
-    jacobian(4, 1) = ct2 * (L_rcc_ - desired_q[2]) + ct2 * (L_scopelen_ + desired_q[2]);
-    jacobian(5, 1) = - ct1 * st2 * (L_rcc_ - desired_q[2]) + ct1 * st2 * (L_scopelen_ + desired_q[2]);
-
-    jacobian(3, 2) = 0;
-    jacobian(4, 2) = 0;
-    jacobian(5, 2) = - 2 * ct1 * ct2;
-
-    jacobian.block<3,1>(3, 3) = Eigen::Vector3f::Zero();
+////    return computed_q;
+//}
 
 
-    return jacobian;
-}
+//Eigen::MatrixXf ECM::getJacobian(const std::vector<float> desired_q) {
+//    Eigen::MatrixXf jacobian(6, 4);
+
+//    //Get Angular Velocity from Transformation matrix
+//    jacobian.block<3,1>(0, 0) = T_1_0_.block<3,1>(0, 2);
+//    jacobian.block<3,1>(0, 1) = T_2_0_.block<3,1>(0, 2);
+//    jacobian.block<3,1>(0, 2) = Eigen::Vector3f::Zero();
+//    jacobian.block<3,1>(0, 3) = T_4_0_.block<3,1>(0, 2);
+
+
+//    //Get Linear Velocity from Transformation matrix
+//    float ct1 = cos(desired_q[0]);
+//    float st1 = sin(desired_q[0]);
+
+//    float ct2 = cos(desired_q[1]);
+//    float st2 = sin(desired_q[1]);
+
+//    jacobian(3, 0) = ct1 * ct2 * (L_rcc_ - desired_q[2]) + ct1 * ct2 * (L_scopelen_ + desired_q[2]);
+//    jacobian(4, 0) = 0.0;
+//    jacobian(5, 0) = st1 * ct2 * (L_rcc_ - desired_q[2]) + st1 * ct2 * (L_scopelen_ + desired_q[2]);
+
+//    jacobian(3, 1) = -st1 * st2 * (L_rcc_ - desired_q[2]) - st1 * st2 * (L_scopelen_ + desired_q[2]);
+//    jacobian(4, 1) = ct2 * (L_rcc_ - desired_q[2]) + ct2 * (L_scopelen_ + desired_q[2]);
+//    jacobian(5, 1) = - ct1 * st2 * (L_rcc_ - desired_q[2]) + ct1 * st2 * (L_scopelen_ + desired_q[2]);
+
+//    jacobian(3, 2) = 0;
+//    jacobian(4, 2) = 0;
+//    jacobian(5, 2) = - 2 * ct1 * ct2;
+
+//    jacobian.block<3,1>(3, 3) = Eigen::Vector3f::Zero();
+
+
+//    return jacobian;
+//}
 //void ECM::testIK() {
 //    Client client;
 //    client.connect();
@@ -210,7 +210,7 @@ Eigen::MatrixXf ECM::getJacobian(const std::vector<float> desired_q) {
 //}
 
 void ECM::cleanup() {
-    for(DH *dh : DH_Vector_)
+    for(DH *dh : DH_Vector)
         dh->~DH();
 }
 
@@ -218,10 +218,10 @@ ECM::~ECM(void){
     cleanup();
 }
 
-int main(int argc, char* argv[])
-{
-    ECM ecm;
-    ecm.testIK(std::vector<float>{-0.3, 0.2, 0.1, -0.9,});
+//int main(int argc, char* argv[])
+//{
+//    ECM ecm;
+//    ecm.testIK(std::vector<float>{-0.3, 0.2, 0.1, -0.9,});
 
-    return 0;
-}
+//    return 0;
+//}

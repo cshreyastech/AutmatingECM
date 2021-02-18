@@ -2,6 +2,12 @@
 
 Utilities::Utilities() {}
 
+const std::string Utilities::joint_type_enum_to_str(JointType enumVal)
+{
+    if (enumVal == JointType::ROTATIONAL) return "ROTATIONAL";
+    else if (enumVal == JointType::PRISMATIC) return "PRISMATIC";
+}
+
 float Utilities::get_angle(Vector3f vec_a, Vector3f vec_b, Vector3f up_vector) {
     float angle = 0.0;
     vec_a.normalize();

@@ -15,9 +15,6 @@ public:
     ~Kinematics(void);
 
 private:
-//    std::vector<DH *> DH_Vector_;
-//    const float L_rcc_ = 0.3822;
-//    const float L_scopelen_ = 0.385495;
     Matrix4f T_1_0_;
     Matrix4f T_2_0_;
     Matrix4f T_3_0_;

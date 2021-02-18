@@ -5,6 +5,8 @@ Kinematics::Kinematics() : ECM() {
 }
 
 Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
+    Utilities utilities;
+
     DH_Vector.clear();
 
     int joint_pos_n = joint_pos.size();
@@ -26,7 +28,7 @@ Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
                            dh_params[row][2],
                            dh_params[row][3],
                            dh_params[row][4],
-                           joint_type_enum_to_str((JointType)dh_params[row][5])));
+                           utilities.joint_type_enum_to_str((JointType)dh_params[row][5])));
     }
 
     T_1_0_ = DH_Vector[0]->get_trans();

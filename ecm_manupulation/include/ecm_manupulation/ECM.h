@@ -9,35 +9,18 @@
 #include "DH.h"
 #include "Utilities.h"
 
-enum class JointType{
-    ROTATIONAL,
-    PRISMATIC,
-};
-
-
 class ECM
 {
 public:
     ECM();
-//    Matrix4f computeFK(std::vector<float> joint_pos);
-//    std::vector<float> computeIK(Matrix4f T_4_0);
-//    void testIK(const std::vector<float>);
-//    Eigen::MatrixXf getJacobian(const std::vector<float> desired_q);
 
     void cleanup();
     ~ECM(void);
 
 protected:
-    const std::string joint_type_enum_to_str(JointType enumVal);
-
     std::vector<DH *> DH_Vector;
     const float L_rcc = 0.3822;
     const float L_scopelen = 0.385495;
-//    Matrix4f T_1_0_;
-//    Matrix4f T_2_0_;
-//    Matrix4f T_3_0_;
-//    Matrix4f T_4_0_;
-
 
 
     float dh_params[4][6] = {

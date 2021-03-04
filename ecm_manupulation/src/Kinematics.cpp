@@ -1,7 +1,39 @@
 #include "ecm_manupulation/Kinematics.h"
 
+
 Kinematics::Kinematics() : ECM() {
 
+}
+
+
+void Kinematics::testParams() {
+    for (itr = joints_param_map.begin(); itr != joints_param_map.end(); itr++) {
+        const ECMSpecs::Joints joint = itr->first;
+        std::cout << "joint: " << joint << std::endl;
+//        std::cout << "joint: " << joint << enum_to_str<ECMSpecs::Joints>(joint) << std::endl; This doest work
+
+        for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++) {
+            ECMSpecs::JointParams joints_param = ptr->first;
+//            std::cout << "joints_param: " << joints_param << enum_to_str<ECMSpecs::JointParams>(joints_param) << std::endl;
+
+            if (joints_param == ECMSpecs::JointParams::dh) {
+                std::vector<float> param = std::any_cast<std::vector<float>>(joints_param_map[joint][joints_param]);
+
+
+                for(float val : param)
+                    std::cout << val << ", ";
+
+            } else if (joints_param == ECMSpecs::JointParams::joints_limit) {
+                std::vector<float> param = std::any_cast<std::vector<float>>(joints_param_map[joint][joints_param]);
+//                std::cout << "joints_param: " << joints_param << enum_to_str<ECMSpecs::JointParams>(joints_param) << std::endl;
+
+                for(float val : param)
+                    std::cout << val << ", ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "----------------------------------" << std::endl;
+    }
 }
 
 Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
@@ -11,25 +43,32 @@ Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
 
     int joint_pos_n = joint_pos.size();
 
+    for(int i = 0; i < joint_pos_n; i++) {
+        DH_PARAMETERS(i, 2) = joint_pos[i];
 
-    for(int i = 0; i < joint_pos_n; i++)
-        dh_params[i][2] = joint_pos[i];
+        std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[static_cast<ECMSpecs::Joints>(i)][ECMSpecs::JointParams::dh]);
+        dh[2] = joint_pos[i];
+        joints_param_map[static_cast<ECMSpecs::Joints>(i)][ECMSpecs::JointParams::dh] = dh;
+    }
 
     if(joint_pos_n > 2) {
-        dh_params[2][2] = 0.0;
-        dh_params[2][3] = joint_pos[2];
+        DH_PARAMETERS(2, 2) = 0.0;
+        DH_PARAMETERS(2, 3) = joint_pos[2];
+
+        std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[static_cast<ECMSpecs::Joints>(2)][ECMSpecs::JointParams::dh]);
+        dh[2] = 0;
+        dh[3] = joint_pos[2];
+        joints_param_map[static_cast<ECMSpecs::Joints>(2)][ECMSpecs::JointParams::dh] = dh;
     }
 
-    int row_n = sizeof(dh_params) / sizeof(dh_params[0]);
-    for(int row = 0; row < row_n; row++) {
+
+    for ( const ECMSpecs::Joints joint : ECMSpecs::allJoints ) {
+        std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[joint][ECMSpecs::JointParams::dh]);
         DH_Vector.push_back(
-                    new DH(dh_params[row][0],
-                           dh_params[row][1],
-                           dh_params[row][2],
-                           dh_params[row][3],
-                           dh_params[row][4],
-                           utilities.joint_type_enum_to_str((JointType)dh_params[row][5])));
+                    new DH(dh[0], dh[1], dh[2], dh[3], dh[4], utilities.joint_type_enum_to_str((JointType)dh[5])));
+        dh.clear();
     }
+
 
     T_1_0_ = DH_Vector[0]->get_trans();
     Matrix4f T_2_1 = DH_Vector[1]->get_trans();
@@ -219,12 +258,4 @@ void Kinematics::cleanup() {
 
 Kinematics::~Kinematics(void){
     cleanup();
-}
-
-int main(int argc, char* argv[])
-{
-    Kinematics kinematics;
-    kinematics.testIK(std::vector<float>{-0.3, 0.2, 0.1, -0.9,});
-
-    return 0;
 }

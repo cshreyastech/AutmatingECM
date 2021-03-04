@@ -41,12 +41,15 @@ include_directories (${GLFW_INCLUDE_DIRS}
 
 
 set (ECM_IK_HDR_FILES
+    include/${PROJECT_NAME}/Dynamics.h
     include/${PROJECT_NAME}/Kinematics.h
     include/${PROJECT_NAME}/ECM.h
     include/${PROJECT_NAME}/DH.h
     include/${PROJECT_NAME}/Utilities.h)
 
 set(ECM_IK_SOURCE_FILES
+    src/main.cpp
+    src/Dynamics.cpp
     src/Kinematics.cpp
     src/ECM.cpp
     src/DH.cpp

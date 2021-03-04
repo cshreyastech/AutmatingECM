@@ -56,18 +56,14 @@ Eigen::Matrix3f Utilities::rotation_from_euler(float roll, float pitch, float ya
     float sw = std::sin(yaw);
     float cw = std::cos(yaw);
 
-    Eigen::Matrix3f Rot_matrix(3, 3);
-    Rot_matrix(0, 0) = cv*cw;
-    Rot_matrix(0, 1) = su*sv*cw - cu*sw;
-    Rot_matrix(0, 2) = su*sw + cu*sv*cw;
-    Rot_matrix(1, 0) = cv*sw;
-    Rot_matrix(1, 1) = cu*cw + su*sv*sw;
-    Rot_matrix(1, 2) = cu*sv*sw - su*cw;
-    Rot_matrix(2, 0) = -sv;
-    Rot_matrix(2, 1) = su*cv;
-    Rot_matrix(2, 2) = cu*cv;
+    Eigen::Matrix3f rot_matrix(3, 3);
 
-    return Rot_matrix;
+    rot_matrix <<
+            cv * cw, su * sv * cw - cu * sw, su * sw + cu * sv * cw,
+            cv * sw, cu * cw + su * sv * sw, cu * sv * sw - su * cw,
+            -sv    , su * cv               , cu*cv;
+
+    return rot_matrix;
 }
 
 Eigen::Vector3f Utilities::rpy_from_rotation(Eigen::Matrix3f R) {

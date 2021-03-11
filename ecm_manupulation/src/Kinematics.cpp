@@ -44,23 +44,17 @@ Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
     int joint_pos_n = joint_pos.size();
 
     for(int i = 0; i < joint_pos_n; i++) {
-        DH_PARAMETERS(i, 2) = joint_pos[i];
-
         std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[static_cast<ECMSpecs::Joints>(i)][ECMSpecs::JointParams::dh]);
         dh[2] = joint_pos[i];
         joints_param_map[static_cast<ECMSpecs::Joints>(i)][ECMSpecs::JointParams::dh] = dh;
     }
 
     if(joint_pos_n > 2) {
-        DH_PARAMETERS(2, 2) = 0.0;
-        DH_PARAMETERS(2, 3) = joint_pos[2];
-
         std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[static_cast<ECMSpecs::Joints>(2)][ECMSpecs::JointParams::dh]);
         dh[2] = 0;
         dh[3] = joint_pos[2];
         joints_param_map[static_cast<ECMSpecs::Joints>(2)][ECMSpecs::JointParams::dh] = dh;
     }
-
 
     for ( const ECMSpecs::Joints joint : ECMSpecs::allJoints ) {
         std::vector<float> dh = std::any_cast<std::vector<float>>(joints_param_map[joint][ECMSpecs::JointParams::dh]);
@@ -68,7 +62,6 @@ Matrix4f Kinematics::computeFK(std::vector<float> joint_pos) {
                     new DH(dh[0], dh[1], dh[2], dh[3], dh[4], utilities.joint_type_enum_to_str((JointType)dh[5])));
         dh.clear();
     }
-
 
     T_1_0_ = DH_Vector[0]->get_trans();
     Matrix4f T_2_1 = DH_Vector[1]->get_trans();
@@ -130,8 +123,6 @@ void Kinematics::testIK(const std::vector<float> desired_q) {
     Eigen::MatrixXf jacobian = this->getJacobian(desired_q);
 
     std::cout << "jacobian " << std::endl << jacobian << std::endl;
-
-
 }
 
 

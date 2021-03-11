@@ -46,7 +46,7 @@
 
 
 cmake_minimum_required (VERSION 3.8.0)
-project (AutomatingECM)
+project (AutomatingECMProject)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
@@ -62,13 +62,15 @@ set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
 
 find_package (Boost COMPONENTS program_options filesystem REQUIRED)
 
-include_directories (${PROJECT_SOURCE_DIR}/external/Eigen)
+include_directories (${PROJECT_SOURCE_DIR}/src/AutmatingECM/external/Eigen)
 
 # static library external dependencies source files
 file (GLOB_RECURSE source_eigen     RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external/Eigen/Eigen/*)
+file (GLOB_RECURSE source_ambf     ABSOLUTE /mnt/OneTB/localcodebase/ambf_repos/aimlab/ambf/*)
+#MESSAGE(STATUS "Found AMBF: ${source_ambf}")
 
 # group source files (MSVC likes this)
-foreach (FILE ${source} ${source_eigen})
+foreach (FILE ${source} ${source_eigen} ${source_ambf})
   get_filename_component (PARENT_DIR "${FILE}" PATH)
   string (REGEX REPLACE "(\\./)?(src|include)/?" "" GROUP "${PARENT_DIR}")
   string (REPLACE "/" "\\" GROUP "${GROUP}")

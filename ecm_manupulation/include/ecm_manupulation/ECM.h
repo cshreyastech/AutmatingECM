@@ -11,9 +11,17 @@
 #include <algorithm>
 #include <type_traits>
 
-//#include "ambf_client/ambf_client.h"
 #include "DH.h"
 #include "Utilities.h"
+
+#include "ambf_client/ambf_client.h"
+
+
+//------------------------------------------------------------------------------
+
+typedef Client* ClientPtr;
+
+//------------------------------------------------------------------------------
 
 namespace ECMSpecs
 {

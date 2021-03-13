@@ -13,8 +13,9 @@ public:
     void testIK(const std::vector<float>);
     Eigen::MatrixXf getJacobian(const std::vector<float> desired_q);
 
-
     void testParams();
+    void AMBFIK();
+
     void cleanup();
     ~Kinematics(void);
 

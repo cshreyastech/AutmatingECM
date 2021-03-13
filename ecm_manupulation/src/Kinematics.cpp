@@ -10,12 +10,8 @@ void Kinematics::testParams() {
     for (itr = joints_param_map.begin(); itr != joints_param_map.end(); itr++) {
         const ECMSpecs::Joints joint = itr->first;
         std::cout << "joint: " << joint << std::endl;
-//        std::cout << "joint: " << joint << enum_to_str<ECMSpecs::Joints>(joint) << std::endl; This doest work
-
         for (ptr = itr->second.begin(); ptr != itr->second.end(); ptr++) {
             ECMSpecs::JointParams joints_param = ptr->first;
-//            std::cout << "joints_param: " << joints_param << enum_to_str<ECMSpecs::JointParams>(joints_param) << std::endl;
-
             if (joints_param == ECMSpecs::JointParams::dh) {
                 std::vector<float> param = std::any_cast<std::vector<float>>(joints_param_map[joint][joints_param]);
 
@@ -25,8 +21,6 @@ void Kinematics::testParams() {
 
             } else if (joints_param == ECMSpecs::JointParams::joints_limit) {
                 std::vector<float> param = std::any_cast<std::vector<float>>(joints_param_map[joint][joints_param]);
-//                std::cout << "joints_param: " << joints_param << enum_to_str<ECMSpecs::JointParams>(joints_param) << std::endl;
-
                 for(float val : param)
                     std::cout << val << ", ";
             }
@@ -162,87 +156,96 @@ Eigen::MatrixXf Kinematics::getJacobian(const std::vector<float> desired_q) {
 }
 
 
-//void ECM::testIK() {
-//    Client client;
-//    client.connect();
-//    usleep(20000);
+void Kinematics::AMBFIK() {
+    ClientPtr clientPtr = new Client("ECM");
+    clientPtr->connect();
+    usleep(20000);
 
 
-//    vector<string> object_names = client.getRigidBodyNames();
+    vector<string> object_names = clientPtr->getRigidBodyNames();
 
-//    std::cout << "object_names" <<std::endl;
-//    for(std::string object_name : object_names)
-//        std::cout << object_name << ", ";
-//    std::cout << std::endl;
+    std::cout << "object_names" <<std::endl;
+    for(std::string object_name : object_names)
+        std::cout << object_name << ", ";
+    std::cout << std::endl;
 
-//    rigidBodyPtr b = client.getRigidBody("ecm/baselink", true);
-//    rigidBodyPtr target_fk_handler = client.getRigidBody("ecm/target_fk", true);
-//    rigidBodyPtr target_ik_handler = client.getRigidBody("ecm/target_ik", true);
-//    usleep(1000000);
+    rigidBodyPtr b = clientPtr->getRigidBody("ecm/baselink", true);
+    rigidBodyPtr target_fk_handler = clientPtr->getRigidBody("ecm/target_fk", true);
+    rigidBodyPtr target_ik_handler = clientPtr->getRigidBody("ecm/target_ik", true);
 
-//    Utilities utilities;
+    usleep(1000000);
 
-
-//    Vector3f P_0_w;
-//    P_0_w[0]= b->get_pos()[0];
-//    P_0_w[1]= b->get_pos()[1];
-//    P_0_w[2]= b->get_pos()[2];
-
-//    Eigen::Matrix3f R_0_w = utilities.rotation_from_euler(b->get_rpy()[0], b->get_rpy()[1], b->get_rpy()[2]);
-
-//    Eigen::Matrix4f T_0_w = utilities.get_frame(R_0_w, P_0_w);
-
-//    int n_poses = 5;
-//    for(int i = 0; i < n_poses; i++) {
-//        std::vector<float> desired_q;
-
-//        for(std::vector<float> joint_limit : ECM_JOINT_LIMITS_) {
-//            float low = joint_limit[0];
-//            float high = joint_limit[1];
-//            desired_q.emplace_back(utilities.get_random_between_range(low, high));
-//        }
-
-//        Matrix4f T_4_0 = this->computeFK(desired_q);
+    Utilities utilities;
 
 
-//        if(target_ik_handler) {
-//            Eigen::Matrix4f T_4_w = T_0_w * T_4_0;
-//            target_ik_handler->set_pos(T_4_w(0, 3), T_4_w(1, 3), T_4_w(2, 3));
+    Vector3f P_0_w;
+    P_0_w[0]= b->get_pos()[0];
+    P_0_w[1]= b->get_pos()[1];
+    P_0_w[2]= b->get_pos()[2];
 
-//            Eigen::Vector3f r_4_w_rpy = utilities.rpy_from_rotation(T_4_w.block<3,3>(0,0));
-//            target_ik_handler->set_rpy(r_4_w_rpy[0], r_4_w_rpy[1], r_4_w_rpy[2]);
-//        }
+    Eigen::Matrix3f R_0_w = utilities.rotation_from_euler(b->get_rpy()[0], b->get_rpy()[1], b->get_rpy()[2]);
 
-//        std::vector<float> computed_q = this->computeIK(T_4_0);
+    Eigen::Matrix4f T_0_w = utilities.get_frame(R_0_w, P_0_w);
 
 
-//        if(target_fk_handler) {
-//            Eigen::Matrix4f T_4_0_fk = this->computeFK(computed_q);
+    int n_poses = 5;
+    for(int i = 0; i < n_poses; i++) {
+        std::vector<float> desired_q;
 
-//            Eigen::Matrix4f T_4_w_fk = T_0_w * T_4_0_fk;
-//            target_fk_handler->set_pos(T_4_w_fk(0, 3), T_4_w_fk(1, 3), T_4_w_fk(2, 3));
+        for ( const ECMSpecs::Joints joint : ECMSpecs::allJoints ) {
+            joints_param_map.insert(make_pair(joint, enum_unordered_map<ECMSpecs::JointParams, std::any>()));
 
-//            Eigen::Vector3f r_4_w_rpy_fk = utilities.rpy_from_rotation(T_4_w_fk.block<3,3>(0,0));
-//            target_fk_handler->set_rpy(r_4_w_rpy_fk[0], r_4_w_rpy_fk[1], r_4_w_rpy_fk[2]);
-//        }
+            const ECMSpecs::JointParams joints_param = ECMSpecs::JointParams::joints_limit;
+            std::vector<float> joint_limit = std::any_cast<std::vector<float>>(joints_param_map[joint][joints_param]);
 
-//        b->set_joint_pos<std::string>(              "baselink-yawlink", computed_q[0]);
-//        b->set_joint_pos<std::string>(         "yawlink-pitchbacklink", computed_q[1]);
-//        b->set_joint_pos<std::string>("pitchendlink-maininsertionlink", computed_q[2]);
-//        b->set_joint_pos<std::string>(    "maininsertionlink-toollink", computed_q[3]);
+            float low = joint_limit[0];
+            float high = joint_limit[1];
+            desired_q.emplace_back(utilities.get_random_between_range(low, high));
+            std::cout << "joint: " << joint << ", low: " << low << ", high: " << high << std::endl;
+        }
 
-//        std::cout << "desired: " <<  desired_q[0] << ", " <<  desired_q[1] << ", " <<  desired_q[2] << ", " <<  desired_q[3] << std::endl;
-//        std::cout << "cal    : " << computed_q[0] << ", " << computed_q[1] << ", " << computed_q[2] << ", " << computed_q[3] << std::endl;
-//        std::cout << "diff   : "
-//                  << std::roundf(desired_q[0] - computed_q[0]) << ", "
-//                  << std::roundf(desired_q[1] - computed_q[1]) << ", "
-//                  << std::roundf(desired_q[2] - computed_q[2]) << ", "
-//                  << std::roundf(desired_q[3] - computed_q[3]) << ", "
-//                  << std::endl;
+        Matrix4f T_4_0 = this->computeFK(desired_q);
 
-//        usleep(1000000);
-//    }
-//}
+
+        if(target_ik_handler) {
+            Eigen::Matrix4f T_4_w = T_0_w * T_4_0;
+            target_ik_handler->set_pos(T_4_w(0, 3), T_4_w(1, 3), T_4_w(2, 3));
+
+            Eigen::Vector3f r_4_w_rpy = utilities.rpy_from_rotation(T_4_w.block<3,3>(0,0));
+            target_ik_handler->set_rpy(r_4_w_rpy[0], r_4_w_rpy[1], r_4_w_rpy[2]);
+        }
+
+        std::vector<float> computed_q = this->computeIK(T_4_0);
+
+
+        if(target_fk_handler) {
+            Eigen::Matrix4f T_4_0_fk = this->computeFK(computed_q);
+
+            Eigen::Matrix4f T_4_w_fk = T_0_w * T_4_0_fk;
+            target_fk_handler->set_pos(T_4_w_fk(0, 3), T_4_w_fk(1, 3), T_4_w_fk(2, 3));
+
+            Eigen::Vector3f r_4_w_rpy_fk = utilities.rpy_from_rotation(T_4_w_fk.block<3,3>(0,0));
+            target_fk_handler->set_rpy(r_4_w_rpy_fk[0], r_4_w_rpy_fk[1], r_4_w_rpy_fk[2]);
+        }
+
+        b->set_joint_pos<std::string>(              "baselink-yawlink", computed_q[0]);
+        b->set_joint_pos<std::string>(         "yawlink-pitchbacklink", computed_q[1]);
+        b->set_joint_pos<std::string>("pitchendlink-maininsertionlink", computed_q[2]);
+        b->set_joint_pos<std::string>(    "maininsertionlink-toollink", computed_q[3]);
+
+        std::cout << "desired: " <<  desired_q[0] << ", " <<  desired_q[1] << ", " <<  desired_q[2] << ", " <<  desired_q[3] << std::endl;
+        std::cout << "cal    : " << computed_q[0] << ", " << computed_q[1] << ", " << computed_q[2] << ", " << computed_q[3] << std::endl;
+        std::cout << "diff   : "
+                  << std::roundf(desired_q[0] - computed_q[0]) << ", "
+                  << std::roundf(desired_q[1] - computed_q[1]) << ", "
+                  << std::roundf(desired_q[2] - computed_q[2]) << ", "
+                  << std::roundf(desired_q[3] - computed_q[3]) << ", "
+                  << std::endl;
+
+        usleep(250000);
+    }
+    clientPtr->cleanUp();
+}
 
 void Kinematics::cleanup() {
 }

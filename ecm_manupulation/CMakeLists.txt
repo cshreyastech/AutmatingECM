@@ -8,9 +8,6 @@ project(ecm_manupulation)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_kinematics)
-
-
 set (ambf_msgs_DIR "/mnt/OneTB/localcodebase/ambf_repos/AutmatingECM/cmake")
 find_package(catkin REQUIRED COMPONENTS
    ambf_msgs
@@ -19,15 +16,15 @@ find_package(catkin REQUIRED COMPONENTS
    tf
 )
 
-get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
-set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
+set (AMBF_CLIENT_LIBRARY "/mnt/OneTB/localcodebase/ambf_repos/aimlab/ambf/build/devel/lib/libambf_client_cpp.so")
+
 FIND_PACKAGE (Eigen3 3.0.0 REQUIRED)
 #find_package(GTest REQUIRED)
 
 FIND_PACKAGE (ambf_client REQUIRED)
 include_directories(${AMBF_CLIENT_INCLUDE_DIR})
-#MESSAGE(STATUS "Found AMBF: ${AMBF_CLIENT_INCLUDE_DIR}")
-#find_package (Boost COMPONENTS program_options filesystem REQUIRED)
+MESSAGE(STATUS "Found AMBF: ${AMBF_CLIENT_INCLUDE_DIR}")
+find_package (Boost COMPONENTS program_options filesystem REQUIRED)
 
 catkin_package(INCLUDE_DIRS include
   LIBRARIES 
@@ -35,7 +32,7 @@ catkin_package(INCLUDE_DIRS include
 #  DEPENDS system_lib
 )
 
-include_directories( include ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
+include_directories( include ${AMBF_CLIENT_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
 
 
 #find_package (ambf_client REQUIRED)
@@ -73,5 +70,5 @@ set(ECM_IK_SOURCE_FILES
     )
 
 add_executable (ecm  ${ECM_IK_HDR_FILES} ${ECM_IK_SOURCE_FILES})
-target_link_libraries (ecm ${AMBF_LIBRARIES} ${AMBF_CLIEMT_LIBRARIES} ${GLFW_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries (ecm ${AMBF_CLIENT_LIBRARY} ${GLFW_LIBRARIES} ${Boost_LIBRARIES} ${Eigen_LIBRARIES} pthread)
 

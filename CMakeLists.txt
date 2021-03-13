@@ -56,9 +56,9 @@ include_directories(
 
 
 include_directories(${catkin_INCLUDE_DIRS})
-
-get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
-set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+#get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
+#set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
 
 find_package (Boost COMPONENTS program_options filesystem REQUIRED)
 
@@ -67,7 +67,6 @@ include_directories (${PROJECT_SOURCE_DIR}/src/AutmatingECM/external/Eigen)
 # static library external dependencies source files
 file (GLOB_RECURSE source_eigen     RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external/Eigen/Eigen/*)
 file (GLOB_RECURSE source_ambf     ABSOLUTE /mnt/OneTB/localcodebase/ambf_repos/aimlab/ambf/*)
-#MESSAGE(STATUS "Found AMBF: ${source_ambf}")
 
 # group source files (MSVC likes this)
 foreach (FILE ${source} ${source_eigen} ${source_ambf})
@@ -79,8 +78,5 @@ endforeach ()
 
 # output location
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
-
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation_modules)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation)
 

@@ -1,0 +1,6 @@
+float64 baselink_yawlink
+float64 yawlink_pitchbacklink
+float64 pitchendlink_maininsertionlink
+float64 maininsertionlink_toollink
+geometry_msgs/Pose pick_pose
+geometry_msgs/Pose place_pose

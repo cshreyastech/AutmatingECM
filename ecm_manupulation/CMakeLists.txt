@@ -54,6 +54,7 @@ include_directories (${GLFW_INCLUDE_DIRS}
 
 
 set (ECM_IK_HDR_FILES
+    include/${PROJECT_NAME}/AMBFClient.h
     include/${PROJECT_NAME}/Dynamics.h
     include/${PROJECT_NAME}/Kinematics.h
     include/${PROJECT_NAME}/ECM.h
@@ -62,6 +63,7 @@ set (ECM_IK_HDR_FILES
 
 set(ECM_IK_SOURCE_FILES
     src/main.cpp
+    src/AMBFClient.cpp
     src/Dynamics.cpp
     src/Kinematics.cpp
     src/ECM.cpp

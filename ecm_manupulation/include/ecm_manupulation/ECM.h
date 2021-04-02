@@ -14,8 +14,8 @@
 #include "DH.h"
 #include "Utilities.h"
 
-#include "ambf_client/ambf_client.h"
-
+//#include "ambf_client/ambf_client.h"
+#include "ecm_manupulation/AMBFClient.h"
 
 //------------------------------------------------------------------------------
 
@@ -104,13 +104,16 @@ protected:
     using enum_unordered_map = std::unordered_map<Key, T, HashType<Key>>;
 
     //                  body name                      //property
-//    std::unordered_map<std::string, std::unordered_map<std::string, std::any>> bodies_param_map;
+    enum_unordered_map<ECMSpecs::Bodies, enum_unordered_map<ECMSpecs::BodyParams, std::any>> bodies_param_map;
     enum_unordered_map<ECMSpecs::Joints, enum_unordered_map<ECMSpecs::JointParams, std::any>> joints_param_map;
 
     enum_unordered_map<ECMSpecs::Joints, enum_unordered_map<ECMSpecs::JointParams, std::any>>::iterator itr;
     enum_unordered_map<ECMSpecs::JointParams, std::any>::iterator ptr;
 
+    ClientPtr clientPtr;
+    rigidBodyPtr getBaseLinkHandler();
     void initlizeECMParams();
+
 
 };
 

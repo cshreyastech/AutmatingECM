@@ -1,6 +1,6 @@
 #include "ecm_manupulation/Dynamics.h"
 
-Dynamics::Dynamics() /*: ECM()*/{ }
+Dynamics::Dynamics() : Kinematics(){ }
 
 Eigen::Matrix<float, 4, 4> Dynamics::getMassMatrix() {
     Eigen::Matrix<float, 4, 4> massMatrix;

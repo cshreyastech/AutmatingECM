@@ -5,7 +5,7 @@
 #include"ecm_manupulation/Kinematics.h"
 #include"ecm_manupulation/Utilities.h"
 
-class Dynamics/* : public ECM*/
+class Dynamics : public Kinematics
 {
 public:
     Dynamics();

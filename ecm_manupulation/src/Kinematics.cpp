@@ -157,11 +157,6 @@ Eigen::MatrixXf Kinematics::getJacobian(const std::vector<float> desired_q) {
 
 
 void Kinematics::AMBFIK() {
-    ClientPtr clientPtr = new Client("ECM");
-    clientPtr->connect();
-    usleep(20000);
-
-
     vector<string> object_names = clientPtr->getRigidBodyNames();
 
     std::cout << "object_names" <<std::endl;
@@ -244,7 +239,6 @@ void Kinematics::AMBFIK() {
 
         usleep(250000);
     }
-    clientPtr->cleanUp();
 }
 
 void Kinematics::cleanup() {

@@ -1,2 +1,0 @@
-<b>Bumper:</b>
--Toggles stop/start of the capture.

@@ -4,10 +4,8 @@
 
 int main(int argc, char* argv[])
 {
-
-
     Kinematics kinematics;
-    kinematics.AMBFIK();
+//    kinematics.AMBFIK();
 
     return 0;
 }

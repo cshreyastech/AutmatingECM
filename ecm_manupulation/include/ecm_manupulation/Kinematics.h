@@ -1,6 +1,8 @@
 #ifndef KINEMATICS_H
 #define KINEMATICS_H
 #include "ecm_manupulation/ECM.h"
+//#include"ambf_client/ambf_client.h"
+
 using namespace ECMSpecs;
 
 class Kinematics : public ECM

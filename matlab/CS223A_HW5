@@ -1,0 +1,96 @@
+
+
+function ECM
+%%
+clear all
+close all
+%%
+    % symbolicy DH parameters of the joints
+    syms a1 alpha1 depth1 theta1(t) t1r tD1r ...
+         a2 alpha2 depth2 theta2(t) t2r tD2r ...
+         a3 alpha3 depth3(t) theta3 d3r dD3r ...
+         a4 alpha4 depth4 theta4(t) t4r tD4r ...
+         L_r L_s ...
+         t g;
+    
+    
+    
+    L_rcc_ = 0.3822;
+    L_scopelen_ = 0.385495;
+    
+    th1 = theta1;
+    th2 = theta2;
+    dep3 = depth3;
+    
+    th4 = theta4;
+    %%
+    
+    % Substuting DH of joins and simplifying them
+    
+    A1 = simplify(compute_dh_matrix(0.0, pi / 2, 0.0, th1 + pi / 2));
+    A1 = vpa(A1,4);
+%     A1 = subs(A1, [a1, alpha1, d1, theta1], [0, pi/2, 0, -0.3]);
+%     
+    A2 = simplify(compute_dh_matrix(0.0, -pi / 2, 0.0, th2 - pi / 2));
+    A2 = vpa(A2,4);
+%     A2 = subs(A2, [a2, alpha2, d2, theta2], [0, -pi/2, 0, 0.2]);
+%     
+    A3 = simplify(compute_dh_matrix(0.0, pi / 2, dep3 - L_r, 0.0));
+    A3 = vpa(A3,4);
+%     A3 = subs(A3, [a3, alpha3, d3, theta3], [0, -pi/2, 0.1, 0]);
+%     
+    A4 = simplify(compute_dh_matrix(0.0, 0.0, L_s, th4));
+    A4 = vpa(A4,4);
+%     A4 = subs(A4, [a4, alpha4, d4, theta4], [0, pi/2, 0, -0.9]);
+%     A4 = subs(A4, [d3, L_r, L_s], [0.1, L_rcc_, L_scopelen_]);
+    
+    
+%     % Translation matrix of joints with respect to base frame
+    T01 = A1;
+    T01 = simplify(T01);
+%     calculate(T01)
+%     T01 = subs(T01, [a1, alpha1, d1, theta1], [0, pi/2, 0, -0.3]);
+%     vpa(T01,2)
+    
+    
+    T02 = T01 ...
+        * A2;
+%     T02 = subs(T02, [a2, alpha2, d2, theta2], [0, -pi/2, 0, 0.2]);
+%     T02 = vpa(T02,2)
+%     T02 = simplify(T02);
+    
+    
+    T03 = T02 ...
+        * A3;
+%     T03 = vpa(T03, 2);
+%     T03 = subs(T03, [a3, alpha3, d3, theta3], [0, pi/2, 0.1, 0]);
+%     T03 = subs(T03, [d3, L_r, L_s], [0.1, L_rcc_, L_scopelen_]);
+%     vpa(T03, 2)
+%     
+% %     T03 = simplify(T03);
+%     
+    T04 = T03 ...
+        * A4;
+%     
+%     T04 = subs(T04, [a1, alpha1, d1, theta1], [0, pi/2, 0, -0.3]);
+%     T04 = subs(T04, [a2, alpha2, d2, theta2], [0, -pi/2, 0, 0.2]);
+%     T04 = subs(T04, [a3, alpha3, d3, theta3], [0, pi/2, 0.1, 0]);
+%     T04 = subs(T04, [a4, alpha4, d4, theta4], [0, 0.0, 0, -0.9]);
+%     T04 = subs(T04, [d3, L_r, L_s], [0.1, L_rcc_, L_scopelen_]);
+%     T04 = vpa(T04, 2)
+    vpa(T04, 2)
+
+
+
+function A = compute_dh_matrix(a, alpha, d, theta)
+    ca = cos(alpha);
+    sa = sin(alpha);
+
+    ct = cos(theta);
+    st = sin(theta);
+
+    
+    A = [ ct     ,    -st    ,      0,          a;
+          st * ca,    ct * ca,    -sa,    -d * sa;
+          st * sa,    ct * sa,     ca,     d * ca;
+          0      ,          0,      0,           1;];

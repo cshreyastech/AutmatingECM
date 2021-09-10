@@ -8,6 +8,11 @@ project(ecm_manupulation)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 
+
+#set(CMAKE_PREFIX_PATH _PATH "/opt/ros/melodic/;${CMAKE_MODULE_PATH}")
+list(APPEND CMAKE_PREFIX_PATH "/opt/ros/melodic/")
+
+
 set (ambf_msgs_DIR "/mnt/OneTB/localcodebase/ambf_repos/AutmatingECM/cmake")
 find_package(catkin REQUIRED COMPONENTS
    ambf_msgs
@@ -32,7 +37,23 @@ catkin_package(INCLUDE_DIRS include
 #  DEPENDS system_lib
 )
 
-include_directories( include ${AMBF_CLIENT_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
+
+catkin_package( INCLUDE_DIRS include
+  LIBRARIES rbdl_model
+#  CATKIN_DEPENDS
+#  DEPENDS system_lib
+)
+
+
+get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
+set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
+
+LIST( APPEND CMAKE_MODULE_PATH ${PARENT_DIR} )
+find_package(RBDL REQUIRED)
+include_directories(${RBDL_INCLUDE_DIRS})
+
+
+include_directories( include ${AMBF_CLIENT_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${RBDL_INCLUDE_DIR})
 
 
 #find_package (ambf_client REQUIRED)

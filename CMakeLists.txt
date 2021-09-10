@@ -79,4 +79,4 @@ endforeach ()
 # output location
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/surgeon_gestures)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/surgeon_gestures)

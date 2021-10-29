@@ -66,7 +66,7 @@ include_directories (${PROJECT_SOURCE_DIR}/src/AutmatingECM/external/Eigen)
 
 # static library external dependencies source files
 file (GLOB_RECURSE source_eigen     RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external/Eigen/Eigen/*)
-file (GLOB_RECURSE source_ambf     ABSOLUTE /mnt/OneTB/localcodebase/ambf_repos/aimlab/ambf/*)
+file (GLOB_RECURSE source_ambf     ABSOLUTE /mnt/OneTB/localcodebase/ambf_repos/ambfvtwodotzero/ambf/ambf_ros_modules/ambf_client/*)
 
 # group source files (MSVC likes this)
 foreach (FILE ${source} ${source_eigen} ${source_ambf})
@@ -74,9 +74,12 @@ foreach (FILE ${source} ${source_eigen} ${source_ambf})
   string (REGEX REPLACE "(\\./)?(src|include)/?" "" GROUP "${PARENT_DIR}")
   string (REPLACE "/" "\\" GROUP "${GROUP}")
   source_group ("${GROUP}" FILES "${FILE}")
+  # MESSAGE(STATUS "${PARENT_DIR}")
 endforeach ()
 
 # output location
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/surgeon_gestures)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/rbdl_model_tests)

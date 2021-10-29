@@ -12,8 +12,8 @@ project(ecm_manupulation)
 #set(CMAKE_PREFIX_PATH _PATH "/opt/ros/melodic/;${CMAKE_MODULE_PATH}")
 list(APPEND CMAKE_PREFIX_PATH "/opt/ros/melodic/")
 
+set (ambf_msgs_DIR ${CMAKE_MODULE_PATH})
 
-set (ambf_msgs_DIR "/mnt/OneTB/localcodebase/ambf_repos/AutmatingECM/cmake")
 find_package(catkin REQUIRED COMPONENTS
    ambf_msgs
    geometry_msgs
@@ -21,11 +21,12 @@ find_package(catkin REQUIRED COMPONENTS
    tf
 )
 
-set (AMBF_CLIENT_LIBRARY "/mnt/OneTB/localcodebase/ambf_repos/aimlab/ambf/build/devel/lib/libambf_client_cpp.so")
+set (AMBF_CLIENT_LIBRARY "/mnt/OneTB/localcodebase/ambf_repos/ambfvtwodotzero/ambf/build/devel/lib/libambf_client_cpp.so")
 
 FIND_PACKAGE (Eigen3 3.0.0 REQUIRED)
 #find_package(GTest REQUIRED)
 
+include_directories("/mnt/OneTB/localcodebase/ambf_repos/ambfvtwodotzero/ambf/ambf_ros_modules/ambf_client/include/")
 FIND_PACKAGE (ambf_client REQUIRED)
 include_directories(${AMBF_CLIENT_INCLUDE_DIR})
 MESSAGE(STATUS "Found AMBF: ${AMBF_CLIENT_INCLUDE_DIR}")
@@ -44,13 +45,13 @@ catkin_package( INCLUDE_DIRS include
 #  DEPENDS system_lib
 )
 
-
 get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
 set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
 
 LIST( APPEND CMAKE_MODULE_PATH ${PARENT_DIR} )
 find_package(RBDL REQUIRED)
 include_directories(${RBDL_INCLUDE_DIRS})
+
 
 
 include_directories( include ${AMBF_CLIENT_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${RBDL_INCLUDE_DIR})
@@ -66,8 +67,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
-
-
 
 include_directories (${GLFW_INCLUDE_DIRS}
                      ${PROJECT_NAME}/include

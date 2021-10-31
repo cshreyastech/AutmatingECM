@@ -107,18 +107,20 @@ include_directories (${GLFW_INCLUDE_DIRS})
 
 set (RBDL_MODEL_TESTS_HDR_FILES
 #    include/${PROJECT_NAME}/RBDLBodyTests.h
+    include/${PROJECT_NAME}/rbdl_tests.h
     include/${PROJECT_NAME}/RBDLTestPrep.h
+    
     )
 
 set(RBDL_MODEL_TESTS_SOURCE_FILES
-    src/RBDLBodyTests.cpp
-    src/RBDLJointTests.cpp
-    src/RBDLTestPrep.cpp
-    src/main.cpp
+    src/KukaBodyTests.cc
+    #src/RBDLJointTests.cpp
+    src/RBDLTestPrep.cc
+    src/main.cc
     )
 
-add_executable (rbdl_model_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
-target_link_libraries (rbdl_model_tests 
+add_executable (kuka_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
+target_link_libraries (kuka_tests 
     ${AMBF_CLIENT_LIBRARY} 
     ${RBDL_MODEL_LIBRARY}
     ${GLFW_LIBRARIES} 

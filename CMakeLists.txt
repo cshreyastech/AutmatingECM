@@ -77,9 +77,20 @@ foreach (FILE ${source} ${source_eigen} ${source_ambf})
   # MESSAGE(STATUS "${PARENT_DIR}")
 endforeach ()
 
+# Find and use the system's Eigen3 library
+FIND_PACKAGE (Eigen3 3.0.0)
+
+IF (NOT EIGEN3_FOUND)
+    MESSAGE (WARNING "Could not find Eigen3 on your system. Please install it!")
+ENDIF (NOT EIGEN3_FOUND)
+
+INCLUDE_DIRECTORIES (${EIGEN3_INCLUDE_DIR})
+
+
 # output location
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/surgeon_gestures)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/rbdl_model_tests)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)

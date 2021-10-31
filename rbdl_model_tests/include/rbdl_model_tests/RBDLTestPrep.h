@@ -1,12 +1,5 @@
 #ifndef RBDLTESTPREP_H
 #define RBDLTESTPREP_H
-#include <UnitTest++.h>
-#include <UnitTest++/UnitTest++.h>
-#include "rbdl/rbdl_mathutils.h"
-#include "rbdl/Body.h"
-#include "rbdl_model/BuildRBDLModel.h"
-#include "ambf_client/ambf_client.h"
-
 
 #include <atomic>
 #include <iostream>
@@ -14,10 +7,9 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
+#include <vector>
 
-
-#include <UnitTest++.h>
-
+#include "rbdl_model_tests/rbdl_tests.h"
 #include "rbdl/rbdl_mathutils.h"
 #include "rbdl/Logging.h"
 
@@ -25,10 +17,10 @@
 #include "rbdl/Kinematics.h"
 #include "rbdl/Dynamics.h"
 #include "rbdl/Constraints.h"
-#include <vector>
 
+#include "rbdl_model/BuildRBDLModel.h"
+#include "ambf_client/ambf_client.h"
 
-using namespace std;
 using namespace RigidBodyDynamics;
 using namespace RigidBodyDynamics::Math;
 
@@ -47,17 +39,18 @@ class RBDLTestPrep
 {
 public:
     static RBDLTestPrep* getInstance(){
-    RBDLTestPrep* sin= instance.load(std::memory_order_acquire);
-    if ( !sin ){
-        std::lock_guard<std::mutex> myLock(myMutex);
-        sin= instance.load(std::memory_order_relaxed);
-        if( !sin ){
-            sin= new RBDLTestPrep();
-            instance.store(sin,std::memory_order_release);
+    RBDLTestPrep* sin= instance_.load(std::memory_order_acquire);
+    if ( !sin )
+    {
+        std::lock_guard<std::mutex> myLock(myMutex_);
+        sin = instance_.load(std::memory_order_relaxed);
+        if( !sin )
+        {
+            sin = new RBDLTestPrep();
+            instance_.store(sin,std::memory_order_release);
         }
     }
-    // volatile int dummy{};
-    return sin;
+        return sin;
     }
 
     std::chrono::duration<double> getTime();
@@ -69,10 +62,10 @@ private:
     RBDLTestPrep(const RBDLTestPrep&)= delete;
     RBDLTestPrep& operator=(const RBDLTestPrep&)= delete;
 
-    static std::atomic<RBDLTestPrep*> instance;
-    static std::mutex myMutex;
+    static std::atomic<RBDLTestPrep*> instance_;
+    static std::mutex myMutex_;
 
-    const std::string actuator_config_file_ = "/localcodebase/ambfnags92/ambf/ambf_models/descriptions/multi-bodies/robots/blender-kuka.yaml";
+    const std::string actuator_config_file_ = "/mnt/OneTB/localcodebase/ambf_repos/ambf_models_with_inertia/KUKA/kuka.yaml";
 
 };
 

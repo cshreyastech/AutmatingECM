@@ -1,35 +1,36 @@
 #include "rbdl_model_tests/RBDLTestPrep.h"
 
-//TEST ( TestRBBLJointToYAML ) {
-//    BuildRBDLModelPtr buildRBDLModelPtr = RBDLTestPrep::getInstance()->getRBDLModelInstance();
+TEST ( TestRBBLJointToYAML ) {
+   BuildRBDLModelPtr buildRBDLModelPtr = RBDLTestPrep::getInstance()->getRBDLModelInstance();
 
-//    std::vector<std::string> bodyNames = buildRBDLModelPtr->getAllBodyNames();
-//    for(std::string bodyName : bodyNames) {
-//        std::cout << bodyName << std::endl;
-//    }
+   std::vector<std::string> bodyNames = buildRBDLModelPtr->getAllBodyNames();
+   for(std::string bodyName : bodyNames) {
+       std::cout << bodyName << std::endl;
+   }
 
-//    std::unordered_map<std::string, jointParamPtr> jointParamObjectMap = buildRBDLModelPtr->getJointChildren(bodyNames[4]);
+   std::unordered_map<std::string, jointParamPtr> jointParamObjectMap = buildRBDLModelPtr->getJointChildren(bodyNames[4]);
 
-//    std::unordered_map<std::string, jointParamPtr> ::iterator jointParamObjectMap_itr;
-//    for(jointParamObjectMap_itr = jointParamObjectMap.begin(); jointParamObjectMap_itr != jointParamObjectMap.end(); jointParamObjectMap_itr++) {
-//        std::cout << jointParamObjectMap_itr->first << std::endl;
-//    }
+   std::unordered_map<std::string, jointParamPtr> ::iterator jointParamObjectMap_itr;
+   for(jointParamObjectMap_itr = jointParamObjectMap.begin(); jointParamObjectMap_itr != jointParamObjectMap.end(); jointParamObjectMap_itr++) {
+       std::cout << jointParamObjectMap_itr->first << std::endl;
+   }
 
-//    jointParamPtr jointParam = jointParamObjectMap["base-link1"];
+   jointParamPtr jointParam = jointParamObjectMap["base-link1"];
 
-//    std::cout << "jointParam->Name(): " << jointParam->Name()
-//              << ", jointParam->Parent(): " << jointParam->Parent()
-//              << ", jointParam->Type(): " << jointParam->Type()
-//              << ", jointParam->Child(): " << jointParam->Child()
-//              << std::endl;
+   std::cout << "jointParam->Name(): " << jointParam->Name()
+             << ", jointParam->Parent(): " << jointParam->Parent()
+             << ", jointParam->Type(): " << jointParam->Type()
+             << ", jointParam->Child(): " << jointParam->Child()
+             << std::endl;
 
-//    Vector3d joint_parent_axis = jointParam->ParentAxis();
-//    std::cout << "joint_parent_axis: " << joint_parent_axis(0) << ", " << joint_parent_axis(1) << ", " << joint_parent_axis(2) << std::endl;
+   Vector3d joint_parent_axis = jointParam->ParentAxis();
+   std::cout << "joint_parent_axis: " << joint_parent_axis(0) << ", " << joint_parent_axis(1) << ", " << joint_parent_axis(2) << std::endl;
 
-//    Vector3d joint_parent_pivot = jointParam->ParentPivot();
-//    std::cout << "joint_parent_pivot: " << joint_parent_pivot(0) << ", " << joint_parent_pivot(1) << ", " << joint_parent_pivot(2) << std::endl;
+   Vector3d joint_parent_pivot = jointParam->ParentPivot();
+   std::cout << "joint_parent_pivot: " << joint_parent_pivot(0) << ", " << joint_parent_pivot(1) << ", " << joint_parent_pivot(2) << std::endl;
 
 //    Matrix3_t m = jointParam->BodyRotation();
+   
 //    std::cout << "BodyRotation: " <<
 //                 m(0, 0) << ", " << m(0, 1) << ", " << m(0, 2) << ", " <<
 //                 m(1, 0) << ", " << m(1, 1) << ", " << m(1, 2) << ", " <<
@@ -37,7 +38,7 @@
 
 
 
-//}
+}
 
 TEST( TestRBDLForwardKinematics ) {
     BuildRBDLModelPtr rbdlModelPtr = RBDLTestPrep::getInstance()->getRBDLModelInstance();

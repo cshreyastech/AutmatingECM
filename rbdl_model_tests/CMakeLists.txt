@@ -107,14 +107,17 @@ include_directories (${GLFW_INCLUDE_DIRS})
 
 set (RBDL_MODEL_TESTS_HDR_FILES
 #    include/${PROJECT_NAME}/RBDLBodyTests.h
+    include/${PROJECT_NAME}/EigenUtilities.h
     include/${PROJECT_NAME}/rbdl_tests.h
     include/${PROJECT_NAME}/RBDLTestPrep.h
     
     )
 
 set(RBDL_MODEL_TESTS_SOURCE_FILES
-    src/KukaBodyTests.cc
+    src/KukaKinematicsTests.cc
+    #src/KukaBodyTests.cc
     #src/RBDLJointTests.cpp
+    src/EigenUtilities.cpp
     src/RBDLTestPrep.cc
     src/main.cc
     )

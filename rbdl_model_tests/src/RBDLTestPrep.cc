@@ -13,8 +13,8 @@ std::chrono::duration<double> RBDLTestPrep::getTime(){
 
 }
 
-ClientPtr RBDLTestPrep::getAMBFClientInstance(){
-  ClientPtr clientPtr = new Client();
+AMBFClientPtr RBDLTestPrep::getAMBFClientInstance(){
+  AMBFClientPtr clientPtr = new Client();
   return clientPtr;
 }
 

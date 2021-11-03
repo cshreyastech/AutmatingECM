@@ -21,16 +21,13 @@
 #include "rbdl_model/BuildRBDLModel.h"
 #include "ambf_client/ambf_client.h"
 
-using namespace RigidBodyDynamics;
-using namespace RigidBodyDynamics::Math;
-
 
 //------------------------------------------------------------------------------
 typedef BuildRBDLModel* BuildRBDLModelPtr;
-typedef Client* ClientPtr;
+typedef Client* AMBFClientPtr;
 //------------------------------------------------------------------------------
 
-const double TEST_PREC = 1.0e-7;
+const double TEST_PREC = 1.0e-3;
 
 
 
@@ -54,7 +51,7 @@ public:
     }
 
     std::chrono::duration<double> getTime();
-    ClientPtr getAMBFClientInstance();
+    AMBFClientPtr getAMBFClientInstance();
     BuildRBDLModelPtr getRBDLModelInstance();
 private:
     RBDLTestPrep()= default;

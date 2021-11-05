@@ -38,32 +38,6 @@ float EigenUtilities::get_random_between_range(float low, float high) {
     return seed;
 }
 
-
-
-Eigen::Matrix3f EigenUtilities::rotation_from_euler(float roll, float pitch, float yaw) {
-
-    // roll and pitch and yaw in radians
-    float su = std::sin(roll);
-    float cu = std::cos(roll);
-    float sv = std::sin(pitch);
-    float cv = std::cos(pitch);
-    float sw = std::sin(yaw);
-    float cw = std::cos(yaw);
-
-    Eigen::Matrix3f Rot_matrix(3, 3);
-    Rot_matrix(0, 0) = cv*cw;
-    Rot_matrix(0, 1) = su*sv*cw - cu*sw;
-    Rot_matrix(0, 2) = su*sw + cu*sv*cw;
-    Rot_matrix(1, 0) = cv*sw;
-    Rot_matrix(1, 1) = cu*cw + su*sv*sw;
-    Rot_matrix(1, 2) = cu*sv*sw - su*cw;
-    Rot_matrix(2, 0) = -sv;
-    Rot_matrix(2, 1) = su*cv;
-    Rot_matrix(2, 2) = cu*cv;
-
-    return Rot_matrix;
-}
-
 Eigen::Vector3f EigenUtilities::rpy_from_rotation(Eigen::Matrix3f R) {
     Eigen::Vector3f rpy;
     rpy[0] = std::atan2(R(2, 1), R(2, 2));
@@ -71,16 +45,6 @@ Eigen::Vector3f EigenUtilities::rpy_from_rotation(Eigen::Matrix3f R) {
     rpy[2] = std::atan2( R(1, 0), R(0, 0));
 
     return rpy;
-}
-
-Eigen::Matrix4f EigenUtilities::get_frame(Eigen::Matrix3f R, Vector3f T){
-    Eigen::Matrix4f Trans;
-    Trans.setIdentity();
-
-    Trans.block<3,3>(0,0) = R;
-    Trans.block<3,1>(0,3) = T;
-
-    return Trans;
 }
 
 EigenUtilities::~EigenUtilities(void) {}

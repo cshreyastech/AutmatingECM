@@ -38,6 +38,40 @@ float EigenUtilities::get_random_between_range(float low, float high) {
     return seed;
 }
 
+Eigen::Matrix3d EigenUtilities::rotationMatrixFromVectors(Eigen::Vector3d vec1, Eigen::Vector3d vec2)
+{
+    Eigen::Matrix3d m;
+    m = Eigen::Matrix3d::Zero(3,3);
+
+    Vector3d a = vec1 / vec1.norm();
+    Vector3d b = vec2 / vec2.norm();
+
+    Vector3d v = a.cross(b);
+    double c = a.dot(b);
+    double s = v.norm();
+
+    Eigen::Matrix3d kmat;
+    kmat = Eigen::Matrix3d::Zero(3,3);
+
+    kmat(0, 1) = -v[2];
+    kmat(0, 2) = -v[1];
+
+    kmat(1, 0) = v[2];
+    kmat(1, 2) = -v[0];
+
+    kmat(2, 0) = -v[1];
+    kmat(2, 1) = v[0];
+
+    Eigen::Matrix3d eye;
+    eye = Eigen::Matrix3d::Identity(3, 3);
+
+    m = eye + kmat + (kmat * kmat) * ((1 - c) / std::pow(s, 2));
+
+    if(m.hasNaN()) m = eye;
+
+    return m;
+}
+
 Eigen::Vector3f EigenUtilities::rpy_from_rotation(Eigen::Matrix3f R) {
     Eigen::Vector3f rpy;
     rpy[0] = std::atan2(R(2, 1), R(2, 2));

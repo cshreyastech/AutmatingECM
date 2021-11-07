@@ -59,8 +59,6 @@ TEST_CASE (__FILE__"_TestKukaBodyInertia", "" )
             bodyInertiaAMBF(1, 1) = I[1];
             bodyInertiaAMBF(2, 2) = I[2];
 
-            std::cout << bodyInertiaAMBF(1, 0) << std::endl;
-
             RigidBodyDynamics::Math::Matrix3d bodyInertiaRBDL = rbdlModel->mBodies.at(rbdlBodyId).mInertia;
 
             CHECK_THAT(bodyInertiaAMBF, AllCloseMatrix(bodyInertiaRBDL,

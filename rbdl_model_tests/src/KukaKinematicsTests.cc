@@ -56,7 +56,6 @@ struct KinematicsFixture {
     AMBFClientPtr clientPtr = nullptr;
     rigidBodyPtr baseHandler = nullptr;
     std::string base;
-    //Eigen::Matrix4f T_0_w;
     Eigen::Matrix4d T_0_w;
 
     VectorNd Q;
@@ -76,55 +75,64 @@ TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionNeutral", "")
 
     CHECK (baseChildren.size() == Q.size());
 
-    for(int i = 0; i < 20; i++)
+    std::map< std::string, unsigned int > mBodyNameMap = rbdlModel->mBodyNameMap;
+    std::map<std::string, unsigned int>::iterator mBodyNameMapItr;
+    for(mBodyNameMapItr = mBodyNameMap.begin(); mBodyNameMapItr != mBodyNameMap.end(); mBodyNameMapItr++)
     {
-        for(std::string joint : joints)
-        {
-            baseHandler->set_joint_pos<std::string>(joint, 0.0f);
-        }
-
-        usleep(250000);
+      std::cout << mBodyNameMapItr->first << ", " << mBodyNameMapItr->second << std::endl;
     }
 
-    Q.setZero();
 
-    for(std::string body : baseChildren)
-    {
-        unsigned int rbdlBodyId = rbdlModel->GetBodyId(body.c_str());
+    // for(int i = 0; i < 20; i++)
+    // {
+    //     for(std::string joint : joints)
+    //     {
+    //         baseHandler->set_joint_pos<std::string>(joint, 0.0f);
+    //     }
 
-        if(rbdlBodyId < rbdlModel->mBodies.size())
-        {
-            rigidBodyPtr rigidBodyHandler = clientPtr->getRigidBody(body, true);
+    //     usleep(250000);
+    // }
+
+    // Q.setZero();
+
+    // for(std::string body : baseChildren)
+    // {
+    //     unsigned int rbdlBodyId = rbdlModel->GetBodyId(body.c_str());
+
+    //     if(rbdlBodyId < rbdlModel->mBodies.size())
+    //     {
+    //         rigidBodyPtr rigidBodyHandler = clientPtr->getRigidBody(body, true);
             
-            // n - respective body frame
-            const tf::Vector3 P_n_w_tf = rigidBodyHandler->get_pos();
+    //         // n - respective body frame
+    //         const tf::Vector3 P_n_w_tf = rigidBodyHandler->get_pos();
 
-            const RigidBodyDynamics::Math::Vector3d P_n_0_rbd_rbdl = CalcBodyToBaseCoordinates(*rbdlModel, Q, rbdlBodyId, 
-                                                                    RigidBodyDynamics::Math::Vector3d(0., 0., 0.),true);
+    //         const RigidBodyDynamics::Math::Vector3d P_n_0_rbd_rbdl = CalcBodyToBaseCoordinates(*rbdlModel, Q, rbdlBodyId, 
+    //                                                                 RigidBodyDynamics::Math::Vector3d(0., 0., 0.),true);
 
-            RigidBodyDynamics::Math::Vector3d P_n_w_rbd_ambf;
-            P_n_w_rbd_ambf.setZero();
+    //         RigidBodyDynamics::Math::Vector3d P_n_w_rbd_ambf;
+    //         P_n_w_rbd_ambf.setZero();
             
-            P_n_w_rbd_ambf(0) = P_n_w_tf[0];
-            P_n_w_rbd_ambf(1) = P_n_w_tf[1];
-            P_n_w_rbd_ambf(2) = P_n_w_tf[2];
+    //         P_n_w_rbd_ambf(0) = P_n_w_tf[0];
+    //         P_n_w_rbd_ambf(1) = P_n_w_tf[1];
+    //         P_n_w_rbd_ambf(2) = P_n_w_tf[2];
 
-            RigidBodyDynamics::Math::Vector4d P_n_w_rbd_rbdl_4d;
-            P_n_w_rbd_rbdl_4d.setOnes();
-            P_n_w_rbd_rbdl_4d(0) = P_n_0_rbd_rbdl(0);
-            P_n_w_rbd_rbdl_4d(1) = P_n_0_rbd_rbdl(1);
-            P_n_w_rbd_rbdl_4d(2) = P_n_0_rbd_rbdl(2);
+    //         RigidBodyDynamics::Math::Vector4d P_n_w_rbd_rbdl_4d;
+    //         P_n_w_rbd_rbdl_4d.setOnes();
+    //         P_n_w_rbd_rbdl_4d(0) = P_n_0_rbd_rbdl(0);
+    //         P_n_w_rbd_rbdl_4d(1) = P_n_0_rbd_rbdl(1);
+    //         P_n_w_rbd_rbdl_4d(2) = P_n_0_rbd_rbdl(2);
 
-            P_n_w_rbd_rbdl_4d = T_0_w * (P_n_w_rbd_rbdl_4d);
+    //         P_n_w_rbd_rbdl_4d = T_0_w * (P_n_w_rbd_rbdl_4d);
 
-            RigidBodyDynamics::Math::Vector3d P_n_w_rbd_rbdl;
-            P_n_w_rbd_rbdl = P_n_w_rbd_rbdl_4d.block<3,1>(0,0);
+    //         RigidBodyDynamics::Math::Vector3d P_n_w_rbd_rbdl;
+    //         P_n_w_rbd_rbdl = P_n_w_rbd_rbdl_4d.block<3,1>(0,0);
                
-            CHECK_THAT(P_n_w_rbd_ambf, AllCloseMatrix(P_n_w_rbd_rbdl, TEST_PREC, TEST_PREC));
-        }
-    }
+    //         CHECK_THAT(P_n_w_rbd_ambf, AllCloseMatrix(P_n_w_rbd_rbdl, TEST_PREC, TEST_PREC));
+    //     }
+    // }
 }
 
+/*
 TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionBaseRotated90Deg", "") 
 {
     // We call ForwardDynamics() as it updates the spatial transformation
@@ -187,3 +195,4 @@ TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionBaseRotated90Deg", "")
         }
     }
 }
+*/

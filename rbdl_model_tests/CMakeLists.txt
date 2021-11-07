@@ -80,43 +80,43 @@ include_directories (${GLFW_INCLUDE_DIRS}
 )
 
 
-set (HDR_FILES
-    include/${PROJECT_NAME}/rbdl_model_test.h)
+# set (HDR_FILES
+#     include/${PROJECT_NAME}/rbdl_model_test.h)
 
-set(SOURCE_FILES
-    src/rbdl_model_test.cpp
-    #src/main.cpp
-    )
+# set(SOURCE_FILES
+#     src/rbdl_model_test.cpp
+#     #src/main.cpp
+#     )
 
 
-set (RBDL_MODEL_TESTS_HDR_FILES
-#    include/${PROJECT_NAME}/RBDLBodyTests.h
-    include/${PROJECT_NAME}/RBDLTestPrep.h
-    )
+# set (RBDL_MODEL_TESTS_HDR_FILES
+# #    include/${PROJECT_NAME}/RBDLBodyTests.h
+#     include/${PROJECT_NAME}/RBDLTestPrep.h
+#     )
 
-set(RBDL_MODEL_TESTS_SOURCE_FILES
-    src/RBDLBodyTests.cpp
-    src/RBDLJointTests.cpp
-    src/RBDLTestPrep.cpp
-    src/main.cpp
-    )
+# set(RBDL_MODEL_TESTS_SOURCE_FILES
+#     src/RBDLBodyTests.cpp
+#     src/RBDLJointTests.cpp
+#     src/RBDLTestPrep.cpp
+#     src/main.cpp
+#     )
 
 find_package (GLFW REQUIRED)
 find_package (Boost COMPONENTS program_options filesystem REQUIRED)
 include_directories (${GLFW_INCLUDE_DIRS})
 
 set (RBDL_MODEL_TESTS_HDR_FILES
-#    include/${PROJECT_NAME}/RBDLBodyTests.h
     include/${PROJECT_NAME}/EigenUtilities.h
     include/${PROJECT_NAME}/rbdl_tests.h
-    include/${PROJECT_NAME}/RBDLTestPrep.h
-    
+    include/${PROJECT_NAME}/RBDLTestPrep.h    
     )
 
+
+################START################
+# Executible kuka_tests
 set(RBDL_MODEL_TESTS_SOURCE_FILES
     src/KukaKinematicsTests.cc
     #src/KukaBodyTests.cc
-    #src/RBDLJointTests.cpp
     src/EigenUtilities.cpp
     src/RBDLTestPrep.cc
     src/main.cc
@@ -133,5 +133,27 @@ target_link_libraries (kuka_tests
     ${RBDL_LIBRARY}
     pthread
     )
+################END################
 
-#target_link_libraries (rbdl_model_tests ${AMBF_CLIENT_LIBRARY} ${GLFW_LIBRARIES} ${Boost_LIBRARIES} ${Eigen_LIBRARIES} pthread)
+
+################START################
+# Executible kuka_hc_tests
+set(RBDL_MODEL_TESTS_SOURCE_FILES
+    src/KukaHCKinematicsTests.cc
+    src/EigenUtilities.cpp
+    src/RBDLTestPrep.cc
+    src/main.cc
+    )
+
+add_executable (kuka_hc_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
+target_link_libraries (kuka_hc_tests 
+    ${AMBF_CLIENT_LIBRARY} 
+    ${RBDL_MODEL_LIBRARY}
+    ${GLFW_LIBRARIES} 
+    ${Boost_LIBRARIES} 
+    ${Eigen_LIBRARIES} 
+    ${UNITTEST++_LIBRARY}
+    ${RBDL_LIBRARY}
+    pthread
+    )
+################END################

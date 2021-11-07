@@ -15,7 +15,7 @@ public:
     EigenUtilities();
     float get_angle(Vector3f vec_a, Vector3f vec_b, Vector3f up_vector);
     float get_random_between_range(float low, float high);
-
+    Eigen::Matrix3d rotationMatrixFromVectors(Eigen::Vector3d vec1, Eigen::Vector3d vec2);
 
     template<typename R>
     R rotation_from_euler(float roll, float pitch, float yaw) {

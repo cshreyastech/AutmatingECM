@@ -1,70 +1,7 @@
-#include "rbdl_model_tests/RBDLTestPrep.h"
-#include "rbdl_model_tests/EigenUtilities.h"
-//#include "rbdl_model_tests/Human36Fixture.h"
+#include "rbdl_model_tests/Kuka.h"
 
 
-//const double TEST_PREC = 1.0e-12;
-const double TEST_LAX = 1.0e-7;
-
-struct KinematicsFixture {
-    KinematicsFixture () {
-        ClearLogOutput();
-
-        BuildRBDLModelPtr rbdlModelPtr = RBDLTestPrep::getInstance()->getRBDLModelInstance();
-        base = rbdlModelPtr->getBaseRigidBody();
-
-
-        clientPtr = RBDLTestPrep::getInstance()->getAMBFClientInstance();
-        clientPtr->connect();
-
-        baseHandler = clientPtr->getRigidBody(base, true);
-        usleep(1000000);
-
-        EigenUtilities eigenUtilities;
-
-        //base is rigid body name, not a joint. This is a hacky way to enable ros topics in the 
-        //server side during first execution
-        baseHandler->set_joint_pos(base, 0.0f); 
-
-        tf::Vector3 P_0_w_tf = baseHandler->get_pos();
-        Eigen::Vector3d P_0_w;
-        P_0_w[0]= P_0_w_tf[0];
-        P_0_w[1]= P_0_w_tf[1];
-        P_0_w[2]= P_0_w_tf[2];
-        
-        tf::Vector3 R_0_w_tf = baseHandler->get_rpy();
-
-        Eigen::Matrix3d R_0_w = eigenUtilities.rotation_from_euler<Eigen::Matrix3d>(R_0_w_tf[0], R_0_w_tf[1], R_0_w_tf[2]);
-
-        T_0_w = eigenUtilities.get_frame<Eigen::Matrix3d, Eigen::Vector3d, Eigen::Matrix4d>(R_0_w, P_0_w);
-
-        rbdlModel = rbdlModelPtr->getRBDLModel();
-        Q = VectorNd::Constant ((size_t) rbdlModel->dof_count, 0.);
-        QDot = VectorNd::Constant ((size_t) rbdlModel->dof_count, 0.);
-        QDDot = VectorNd::Constant ((size_t) rbdlModel->dof_count, 0.);
-        Tau = VectorNd::Constant ((size_t) rbdlModel->dof_count, 0.);
-
-        ClearLogOutput();
-    }
-
-    ~KinematicsFixture () {
-        delete rbdlModel;
-        clientPtr->cleanUp();
-    }
-
-    Model *rbdlModel = nullptr;
-    AMBFClientPtr clientPtr = nullptr;
-    rigidBodyPtr baseHandler = nullptr;
-    std::string base;
-    Eigen::Matrix4d T_0_w;
-
-    VectorNd Q;
-    VectorNd QDot;
-    VectorNd QDDot;
-    VectorNd Tau;
-};
-
-TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionNeutral", "") 
+TEST_CASE_METHOD(Kuka, __FILE__"_TestPositionNeutral", "") 
 {
     // We call ForwardDynamics() as it updates the spatial transformation
     // matrices
@@ -133,7 +70,7 @@ TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionNeutral", "")
 }
 
 /*
-TEST_CASE_METHOD(KinematicsFixture, __FILE__"_TestPositionBaseRotated90Deg", "") 
+TEST_CASE_METHOD(Kuka, __FILE__"_TestPositionBaseRotated90Deg", "") 
 {
     // We call ForwardDynamics() as it updates the spatial transformation
     // matrices

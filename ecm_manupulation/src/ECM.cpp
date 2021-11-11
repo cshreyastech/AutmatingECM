@@ -21,6 +21,8 @@ const std::string ECM::ecm_body_params_enum_to_str(ECMSpecs::BodyParams enumVal)
 {
     if (enumVal == ECMSpecs::BodyParams::mass) return "mass";
     else if (enumVal == ECMSpecs::BodyParams::inertia) return "inertia";
+
+    return "";
 }
 
 const std::string ECM::ecm_joints_enum_to_str(ECMSpecs::Joints enumVal)
@@ -29,12 +31,16 @@ const std::string ECM::ecm_joints_enum_to_str(ECMSpecs::Joints enumVal)
     else if (enumVal == ECMSpecs::Joints::yawlink_pitchbacklink) return "yawlink_pitchbacklink";
     else if (enumVal == ECMSpecs::Joints::pitchendlink_maininsertionlink) return "pitchendlink_maininsertionlink";
     else if (enumVal == ECMSpecs::Joints::maininsertionlink_toollink) return "maininsertionlink_toollink";
+
+    return "";
 }
 
 const std::string ECM::ecm_joint_params_enum_to_str(ECMSpecs::JointParams enumVal)
 {
     if (enumVal == ECMSpecs::JointParams::dh) return "dh";
     else if (enumVal == ECMSpecs::JointParams::joints_limit) return "joints_limit";
+
+    return "";
 }
 
 void ECM::initlizeECMParams() {

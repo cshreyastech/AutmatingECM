@@ -115,40 +115,16 @@ set (RBDL_MODEL_TESTS_HDR_FILES
 
 ################START################
 # Executible kuka_tests
-# set(RBDL_MODEL_TESTS_SOURCE_FILES
-#     src/KukaKinematicsTests.cc
-#     #src/KukaBodyTests.cc
-#     src/EigenUtilities.cpp
-#     src/RBDLTestPrep.cc
-#     src/main.cc
-#     )
-
-# add_executable (kuka_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
-# target_link_libraries (kuka_tests 
-#     ${AMBF_CLIENT_LIBRARY} 
-#     ${RBDL_MODEL_LIBRARY}
-#     ${GLFW_LIBRARIES} 
-#     ${Boost_LIBRARIES} 
-#     ${Eigen_LIBRARIES} 
-#     ${UNITTEST++_LIBRARY}
-#     ${RBDL_LIBRARY}
-#     pthread
-#     )
-################END################
-
-
-################START################
-# Executible kuka_hc_tests
 set(RBDL_MODEL_TESTS_SOURCE_FILES
-    src/KukaHCDynamicsTests.cc
-    #src/KukaHCKinematicsTests.cc
+    src/KukaKinematicsTests.cc
+    #src/KukaBodyTests.cc
     src/EigenUtilities.cpp
     src/RBDLTestPrep.cc
     src/main.cc
     )
 
-add_executable (kuka_hc_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
-target_link_libraries (kuka_hc_tests 
+add_executable (kuka_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
+target_link_libraries (kuka_tests 
     ${AMBF_CLIENT_LIBRARY} 
     ${RBDL_MODEL_LIBRARY}
     ${GLFW_LIBRARIES} 
@@ -158,4 +134,28 @@ target_link_libraries (kuka_hc_tests
     ${RBDL_LIBRARY}
     pthread
     )
+################END################
+
+
+################START################
+# Executible kuka_hc_tests
+# set(RBDL_MODEL_TESTS_SOURCE_FILES
+#     #src/KukaHCDynamicsTests.cc
+#     src/KukaHCKinematicsTests.cc
+#     src/EigenUtilities.cpp
+#     src/RBDLTestPrep.cc
+#     src/main.cc
+#     )
+
+# add_executable (kuka_hc_tests  ${RBDL_MODEL_TESTS_HDR_FILES} ${RBDL_MODEL_TESTS_SOURCE_FILES})
+# target_link_libraries (kuka_hc_tests 
+#     ${AMBF_CLIENT_LIBRARY} 
+#     ${RBDL_MODEL_LIBRARY}
+#     ${GLFW_LIBRARIES} 
+#     ${Boost_LIBRARIES} 
+#     ${Eigen_LIBRARIES} 
+#     ${UNITTEST++_LIBRARY}
+#     ${RBDL_LIBRARY}
+#     pthread
+#     )
 ################END################

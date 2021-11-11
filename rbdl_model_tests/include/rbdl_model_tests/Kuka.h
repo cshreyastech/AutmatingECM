@@ -9,28 +9,28 @@ const double TEST_LAX = 1.0e-7;
 struct Kuka {
   Kuka () {
     ClearLogOutput();
-        clientPtr = RBDLTestPrep::getInstance()->getAMBFClientInstance();
-        clientPtr->connect();
+    clientPtr = RBDLTestPrep::getInstance()->getAMBFClientInstance();
+    clientPtr->connect();
 
 
-        baseHandler = clientPtr->getRigidBody(base_name, true);
-        usleep(1000000);
+    baseHandler = clientPtr->getRigidBody(base_name, true);
+    usleep(1000000);
 
-        //base is rigid body name, not a joint. This is a hacky way to enable ros topics in the 
-        //server side during first execution
-        baseHandler->set_joint_pos(base_name, 0.0f); 
+    //base is rigid body name, not a joint. This is a hacky way to enable ros topics in the 
+    //server side during first execution
+    baseHandler->set_joint_pos(base_name, 0.0f); 
 
-        tf::Vector3 P_0_w_tf = baseHandler->get_pos();
-        Eigen::Vector3d P_0_w;
-        P_0_w[0]= P_0_w_tf[0];
-        P_0_w[1]= P_0_w_tf[1];
-        P_0_w[2]= P_0_w_tf[2];
-        
-        tf::Vector3 R_0_w_tf = baseHandler->get_rpy();
+    tf::Vector3 P_0_w_tf = baseHandler->get_pos();
+    Eigen::Vector3d P_0_w;
+    P_0_w[0]= P_0_w_tf[0];
+    P_0_w[1]= P_0_w_tf[1];
+    P_0_w[2]= P_0_w_tf[2];
+    
+    tf::Vector3 R_0_w_tf = baseHandler->get_rpy();
 
-        Eigen::Matrix3d R_0_w = eigenUtilities.rotation_from_euler<Eigen::Matrix3d>(R_0_w_tf[0], R_0_w_tf[1], R_0_w_tf[2]);
+    Eigen::Matrix3d R_0_w = eigenUtilities.rotation_from_euler<Eigen::Matrix3d>(R_0_w_tf[0], R_0_w_tf[1], R_0_w_tf[2]);
 
-        T_0_w = eigenUtilities.get_frame<Eigen::Matrix3d, Eigen::Vector3d, Eigen::Matrix4d>(R_0_w, P_0_w);
+    T_0_w = eigenUtilities.get_frame<Eigen::Matrix3d, Eigen::Vector3d, Eigen::Matrix4d>(R_0_w, P_0_w);
 
 
     rbdlModel = new Model;
@@ -109,7 +109,7 @@ struct Kuka {
     link5_link6ST.E(1, 2) = -1.0;
     link5_link6ST.E(2, 1) = 1.0;
     link5_link6ST.r = RigidBodyDynamics::Math::Vector3d(0.002, -0.052, 0.204);
-    link6_id = rbdlModel->AddBody(link5_id, link5_link6ST, JointTypeRevoluteZ, link6, "link6");
+    link6_id = rbdlModel->AddBody(link5_id, link5_link6ST, JointTypeRevolute, link6, "link6");
 
     link7 = Body (1., RigidBodyDynamics::Math::Vector3d (0.006, 0., 0.015), 
               RigidBodyDynamics::Math::Vector3d (0.0012, 0.0013, 0.001));

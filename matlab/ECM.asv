@@ -159,7 +159,7 @@ function ECM
         J_W_w_yawlink_square + J_W_w_pitchbacklink_square + J_W_w_maininsertionlink_square + J_W_w_toollink_square);
     
     % 4x4
-    M = M_syms(n);
+    M = M_syms(n)
 
     %% Centrifugal and Coriolis Vector V
     % v(q, qd) = Md*qd - 1/2* [ [qd' * (M)td1r * qd]; [qd' * (M)td2r * qd] ]
@@ -282,14 +282,13 @@ function ECM
         - J_W_v_toollink'          * [ 0; 0; -m_toollink          * g; ] ...
     );
 
-    %% Tarque
-    syms ddq_baselink_yawlink ddq_yawlink_pitchbacklink ...
-         ddq_pitchendlink_maininsertionlink ddq_maininsertionlink_toollink;
+%% Tarque
+
     ddqs = [ 
-        ddq_baselink_yawlink; 
-        ddq_yawlink_pitchbacklink; 
-        ddq_pitchendlink_maininsertionlink; 
-        ddq_maininsertionlink_toollink; 
+        qdd_baselink_yawlink; 
+        qdd_yawlink_pitchbacklink; 
+        qdd_pitchendlink_maininsertionlink; 
+        qdd_maininsertionlink_toollink; 
         ];
 
     T = M * ddqs + V + G_W

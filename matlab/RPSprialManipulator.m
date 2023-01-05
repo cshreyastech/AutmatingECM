@@ -81,7 +81,7 @@ J_0_w2_square = simplify(transpose(J_C2_w2) * I2_c2 * J_C2_w2);
 
 %M = m1 * Jv1' * Jv1 + m2 * Jv2' * Jv2 
 % + Jw1' * I1_c1 * Jw1 + Jw2' * I2_c2* Jw2
-M = simplify(J_0_v1_square + J_0_v2_square + J_0_w1_square + J_0_w2_square);
+M = simplify(J_0_v1_square + J_0_v2_square + J_0_w1_square + J_0_w2_square)
 
 %%
 % Deriving Centrifugal and Coriolis forces
@@ -125,6 +125,10 @@ M2 = dq' * [
     ] * dq;
 
 V = dM * dq - (1/2) * [M1; M2];
+
+%% Verify
+dq' * (1/2 * dM - V) * dq == 0
+
 %%
 % Gravity
 G_0 = - J_0_v1' * [ 0; 0; m1 * g] - J_0_v2' * [ 0; 0; m2 * g];
@@ -132,4 +136,4 @@ G_0 = - J_0_v1' * [ 0; 0; m1 * g] - J_0_v2' * [ 0; 0; m2 * g];
 %%
 % Torque calculation
 % M(ddq) + c dq^2 + Bdq' + G = T
-T = M * [diff(theta1(t), t, t); diff(d2(t), t, t)] + V + G_0
+T = M * [diff(theta1(t), t, t); diff(d2(t), t, t)] + V + G_0;

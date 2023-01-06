@@ -135,19 +135,19 @@ function ECM
 % 
 % M34_43_equal = isequal(simplify(M(3, 4)), simplify(M(4, 3)))
 
-% dM(1:4, 2) = diff(M(1:4, 2), q2)
-% dM(1:4, 3) = diff(M(1:4, 3), q3)
-% dM(1:4, 4) = diff(M(1:4, 4), q4)
     %% Centrifugal and Coriolis Vector V
+
+%     % Christoffel Symbols
     syms V_syms(n);
     V_syms(n) = [ 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0;];
     V = V_syms(n);
     qs = [q1; q2; q3; q4;];
     qds = [qd1; qd2; qd3; qd4;];
+
+    % validate skew symmetry property. Refernce Stanford notes
     for i = 1:4
         for j = 1:4
             for k = 1:4
-%                 fprintf('i: %d, j: %d, k: %d\n', i, j, k);
                 val = 1/2 * (diff(M(i, j), qs(k)) * qds(k) + ...
                                  diff(M(i, k), qs(j)) * qds(j)- ...
                                  diff(M(j, k), qs(i)) * qds(i)) * qds(k);
@@ -156,11 +156,41 @@ function ECM
             V(i, j) = sum(a(:));
         end
     end
-    %% Verify Skew Symmetry and Passivity Properites
-dM = diff(M, q1) * qd1 + diff(M, q2) * qd2 + diff(M, q3) * qd3 + diff(M, q4) * qd4;
 
-N = simplify(dM - 2*V);
+% Does not validate skew symmetry property. Reference Robot modeling and
+% control book
+%     for i = 1:4
+%         for j = 1:4
+%             for k = 1:4
+%                 val = 1/2 * (diff(M(k, j), qs(j)) * qds(j) + ...
+%                                  diff(M(k, i), qs(j)) * qds(j)- ...
+%                                  diff(M(i, j), qs(k)) * qds(k)) * qds(i);
+%                 a(1, 1, k) = val;
+%             end
+%             V(i, j) = sum(a(:));
+%         end
+%     end
 
+    % validate skew symmetry property. Refernce Mathematical Introduction
+    % to Robotic manipulation. Results matches with results w.r.t Standford
+    % notes.
+%     for i = 1:4
+%         for j = 1:4
+%             for k = 1:4
+%                 val = 1/2 * (diff(M(i, j), qs(k)) * qds(k) + ...
+%                                  diff(M(i, k), qs(j)) * qds(j)- ...
+%                                  diff(M(k, j), qs(i)) * qds(i)) * qds(k);
+%                 a(1, 1, k) = val;
+%             end
+%             V_(i, j) = sum(a(:));
+%         end
+%     end
+%     isequal(V, V_)
+%     %% Verify Skew Symmetry and Passivity Properites
+% dM = diff(M, q1) * qd1 + diff(M, q2) * qd2 + diff(M, q3) * qd3 + diff(M, q4) * qd4;
+% 
+% N = simplify(dM - 2*V);
+% 
 % N12_21_equal = isequal(N(1, 2), -N(2, 1))
 % N13_31_equal = isequal(N(1, 3), -N(3, 1))
 % N14_41_equal = isequal(N(1, 4), -N(4, 1))
@@ -170,23 +200,21 @@ N = simplify(dM - 2*V);
 % 
 % N34_43_equal = isequal(N(3, 4), -N(4, 3))
 
-% 
-% qd_centrifugal = [
-%     qd1^2;
-%     qd2^2;
-%     qd3^2;
-%     qd4^2;
-%     ];
-% qd_coriolis = [
-%     qd1 * qd2;
-%     qd1 * qd3;
-%     qd1 * qd4;
-%     qd2 * qd3;
-%     qd2 * qd4;
-%     qd3 * qd4;
-%     ];
-% 
-%     V = C * qd_centrifugal + B * qd_coriolis;
+
+qd_centrifugal = [
+    qd1^2;
+    qd2^2;
+    qd3^2;
+    qd4^2;
+    ];
+qd_coriolis = [
+    qd1 * qd2;
+    qd1 * qd3;
+    qd1 * qd4;
+    qd2 * qd3;
+    qd2 * qd4;
+    qd3 * qd4;
+    ];
 
 
 %% Calculation of Torque

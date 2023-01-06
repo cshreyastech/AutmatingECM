@@ -134,77 +134,62 @@ function ECM
 % M24_42_equal = isequal(simplify(M(2, 4)), simplify(M(4, 2)))
 % 
 % M34_43_equal = isequal(simplify(M(3, 4)), simplify(M(4, 3)))
+
+% dM(1:4, 2) = diff(M(1:4, 2), q2)
+% dM(1:4, 3) = diff(M(1:4, 3), q3)
+% dM(1:4, 4) = diff(M(1:4, 4), q4)
     %% Centrifugal and Coriolis Vector V
-    % v(q, qd) = Md*qd - 1/2* [ [qd' * (M)td1r * qd]; [qd' * (M)td2r * qd] ]
-    % v(q, qd) = C(q)*[qd^2] + B(q)*[qd * qd] )
-    % Used derivation from Christoffel Symbols
-%  syms C_syms(n);
-C(1, 1) = 1/2 * diff(M(1, 1), q1);
-C(1, 2) = diff(M(1, 2), q2) - 1/2 * diff(M(2, 2), q1);
-C(1, 3) = diff(M(1, 3), q3) - 1/2 * diff(M(3, 3), q1);
-C(1, 4) = diff(M(1, 4), q4) - 1/2 * diff(M(4, 4), q1);
+    syms V_syms(n);
+    V_syms(n) = [ 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0; 0, 0, 0, 0;];
+    V = V_syms(n);
+    qs = [q1; q2; q3; q4;];
+    qds = [qd1; qd2; qd3; qd4;];
+    for i = 1:4
+        for j = 1:4
+            for k = 1:4
+%                 fprintf('i: %d, j: %d, k: %d\n', i, j, k);
+                val = 1/2 * (diff(M(i, j), qs(k)) * qds(k) + ...
+                                 diff(M(i, k), qs(j)) * qds(j)- ...
+                                 diff(M(j, k), qs(i)) * qds(i)) * qds(k);
+                a(1, 1, k) = val;
+            end
+            V(i, j) = sum(a(:));
+        end
+    end
+    %% Verify Skew Symmetry and Passivity Properites
+dM = diff(M, q1) * qd1 + diff(M, q2) * qd2 + diff(M, q3) * qd3 + diff(M, q4) * qd4;
 
-C(2, 1) = diff(M(2, 1), q1) - 1/2 * diff(M(1, 1), q2);
-C(2, 2) = 1/2 * diff(M(2, 2), q2);
-C(2, 3) = diff(M(2, 3), q3) - 1/2 * diff(M(3, 3), q2);
-C(2, 4) = diff(M(2, 4), q4) - 1/2 * diff(M(4, 4), q2);
+N = simplify(dM - 2*V);
 
-C(3, 1) = diff(M(3, 1), q1) - 1/2 * diff(M(1, 1), q3);
-C(3, 2) = diff(M(3, 2), q2) - 1/2 * diff(M(2, 2), q3);
-C(3, 3) = 1/2 * diff(M(3, 3), q3);
-C(3, 4) = diff(M(3, 4), q4) - 1/2 * diff(M(4, 4), q3);
+% N12_21_equal = isequal(N(1, 2), -N(2, 1))
+% N13_31_equal = isequal(N(1, 3), -N(3, 1))
+% N14_41_equal = isequal(N(1, 4), -N(4, 1))
+% 
+% N23_32_equal = isequal(N(2, 3), -N(3, 2))
+% N24_42_equal = isequal(N(2, 4), -N(4, 2))
+% 
+% N34_43_equal = isequal(N(3, 4), -N(4, 3))
 
-C(4, 1) = diff(M(4, 1), q1) - 1/2 * diff(M(1, 1), q4);
-C(4, 2) = diff(M(4, 2), q2) - 1/2 * diff(M(2, 2), q4);
-C(4, 3) = diff(M(4, 3), q3) - 1/2 * diff(M(3, 3), q4);
-C(4, 4) = 1/2 * diff(M(4, 4), q4);
+% 
+% qd_centrifugal = [
+%     qd1^2;
+%     qd2^2;
+%     qd3^2;
+%     qd4^2;
+%     ];
+% qd_coriolis = [
+%     qd1 * qd2;
+%     qd1 * qd3;
+%     qd1 * qd4;
+%     qd2 * qd3;
+%     qd2 * qd4;
+%     qd3 * qd4;
+%     ];
+% 
+%     V = C * qd_centrifugal + B * qd_coriolis;
 
-qd_centrifugal = [
-    qd1^2;
-    qd2^2;
-    qd3^2;
-    qd4^2;
-    ];
 
-B(1, 1) = diff(M(1, 1), q2);
-B(1, 2) = diff(M(1, 1), q3);
-B(1, 3) = diff(M(1, 1), q4);
-B(1, 4) = diff(M(1, 2), q3) + diff(M(1, 3), q2) - diff(M(2, 3), q1);
-B(1, 5) = diff(M(1, 2), q4) + diff(M(1, 4), q2) - diff(M(2, 4), q1);
-B(1, 6) = diff(M(1, 3), q4) + diff(M(1, 4), q3) - diff(M(3, 4), q1);
-
-B(2, 1) = diff(M(2, 2), q1);
-B(2, 2) = diff(M(2, 1), q3) + diff(M(2, 3), q1) - diff(M(1, 3), q2);
-B(2, 3) = diff(M(1, 2), q4) + diff(M(2, 4), q1) - diff(M(1, 4), q2);
-B(2, 4) = diff(M(2, 2), q3);
-B(2, 5) = diff(M(2, 2), q4);
-B(2, 6) = diff(M(2, 3), q4) + diff(M(2, 4), q3) - diff(M(3, 4), q2);
-
-B(3, 1) = diff(M(1, 3), q2) + diff(M(2, 3), q1) - diff(M(1, 2), q3);
-B(3, 2) = diff(M(3, 3), q1);
-B(3, 3) = diff(M(3, 1), q4) + diff(M(3, 4), q1) - diff(M(1, 4), q3);
-B(3, 4) = diff(M(3, 3), q2);
-B(3, 5) = diff(M(2, 3), q4) + diff(M(3, 4), q2) - diff(M(2, 4), q3);
-B(3, 6) = diff(M(3, 3), q4);
-
-B(4, 1) = diff(M(4, 1), q2) + diff(M(4, 2), q1) - diff(M(1, 2), q4);
-B(4, 2) = diff(M(1, 4), q3) + diff(M(3, 4), q1) - diff(M(1, 3), q4);
-B(4, 3) = diff(M(4, 4), q1);
-B(4, 4) = diff(M(2, 4), q3) + diff(M(3, 4), q2) - diff(M(2, 3), q4);
-B(4, 5) = diff(M(4, 4), q2);
-B(4, 6) = diff(M(4, 4), q3);
-
-qd_coriolis = [
-    qd1 * qd2;
-    qd1 * qd3;
-    qd1 * qd4;
-    qd2 * qd3;
-    qd2 * qd4;
-    qd3 * qd4;
-    ];
-
-    V = C * qd_centrifugal + B * qd_coriolis;
-    
+%% Calculation of Torque
     syms g;
     G_W = simplify(...
         - transpose(J_W_v1) * [ 0; 0; -m1 * g; ] ...

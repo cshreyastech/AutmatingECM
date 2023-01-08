@@ -1,0 +1,7 @@
+[submodule "Envision/vendor/eigen"]
+	path = Envision/vendor/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+	branch = 3.4
+[submodule "Envision/vendor/spdlog"]
+	path = Envision/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git

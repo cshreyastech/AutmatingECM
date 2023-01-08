@@ -1,21 +1,56 @@
-build/
-build-debug/
-*build/
-*.user
-*.idea
-*~
-bin/lin-x86_64/*
-bin/mac-x86_64/ambf_simulator
-bin-debug/
+# cmake
 
-*.autosave
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
 
-*.pyc
+# C++
+# Prerequisites
+*.d
 
-*.bin
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-*.ipch
+# Precompiled Headers
+*.gch
+*.pch
 
-\.vscode/
-*.blend1
-*.old
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+out
+out/*
+out/build/*
+out/make_dir/*
+out/bin/*
+# Ignore all build folders
+[Bb][Uu][Ii][Ll][Dd]/*
+.vscode

@@ -45,52 +45,11 @@
 # COURTESY:
 
 
-cmake_minimum_required (VERSION 3.8.0)
-project (AutomatingECMProject)
-set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required(VERSION 3.0.0)
+project(ambf_control_system VERSION 2.0)
 
-include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
-)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/bin)
 
-
-include_directories(${catkin_INCLUDE_DIRS})
-set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-#get_filename_component(PARENT_CMAKE ../cmake ABSOLUTE)
-#set (CMAKE_MODULE_PATH ${PARENT_CMAKE} )
-
-find_package (Boost COMPONENTS program_options filesystem REQUIRED)
-
-include_directories (${PROJECT_SOURCE_DIR}/src/AutmatingECM/external/Eigen)
-
-# static library external dependencies source files
-file (GLOB_RECURSE source_eigen     RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/external/Eigen/Eigen/*)
-file (GLOB_RECURSE source_ambf     ABSOLUTE /mnt/OneTB/localcodebase/ambf_repos/ambfvtwodotzero/ambf/ambf_ros_modules/ambf_client/*)
-
-# group source files (MSVC likes this)
-foreach (FILE ${source} ${source_eigen} ${source_ambf})
-  get_filename_component (PARENT_DIR "${FILE}" PATH)
-  string (REGEX REPLACE "(\\./)?(src|include)/?" "" GROUP "${PARENT_DIR}")
-  string (REPLACE "/" "\\" GROUP "${GROUP}")
-  source_group ("${GROUP}" FILES "${FILE}")
-  # MESSAGE(STATUS "${PARENT_DIR}")
-endforeach ()
-
-# Find and use the system's Eigen3 library
-FIND_PACKAGE (Eigen3 3.0.0)
-
-IF (NOT EIGEN3_FOUND)
-    MESSAGE (WARNING "Could not find Eigen3 on your system. Please install it!")
-ENDIF (NOT EIGEN3_FOUND)
-
-INCLUDE_DIRECTORIES (${EIGEN3_INCLUDE_DIR})
-
-
-# output location
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ecm_manupulation)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/surgeon_gestures)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/rbdl_model_tests)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+add_subdirectory(Envision)
+# add_subdirectory(Sandbox)
+add_subdirectory(ECM)

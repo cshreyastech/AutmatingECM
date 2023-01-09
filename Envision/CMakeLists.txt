@@ -35,5 +35,3 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE ${spdlog_BINARY_DIR}/libspdlog.a
   PRIVATE ${AMBF_CLIENT_LIBRARIES}
 )
-
-# include(Sway.h)

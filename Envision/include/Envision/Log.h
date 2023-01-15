@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LOG_
+#define _LOG_
 #include "PCH/pch.h"
 
 namespace Envision {
@@ -29,3 +30,5 @@ namespace Envision {
 #define EN_CLIENT_INFO(...)	::Envision::Log::GetClientLogger()->info(__VA_ARGS__)
 #define EN_CLIENT_WARN(...)	::Envision::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define EN_CLIENT_ERROR(...)::Envision::Log::GetClientLogger()->error(__VA_ARGS__)
+
+#endif

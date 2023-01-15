@@ -18,12 +18,11 @@
 #include <unordered_set>
 #include <vector>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 #include "eigen3/Eigen/Dense"
 #include "eigen3/Eigen/Core"
 
 
 #include "ambf_client/ambf_client.h"
 
+using namespace Eigen;
 #endif

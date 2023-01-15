@@ -51,5 +51,19 @@ project(ambf_control_system VERSION 2.0)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/bin)
 
 add_subdirectory(Envision)
-# add_subdirectory(Sandbox)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+find_package(Eigen3 REQUIRED)
+find_package(AMBF_CLIENT REQUIRED)
+
+include_directories(
+  ${Eigen3_INCLUDE_DIRS}
+  ${ROS_INCLUDE_DIRS}
+  ${AMBF_CLIENT_INCLUDE_DIRS}
+  ${AMBF_MSGS_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/PCH/include
+  )
+
+
+
 add_subdirectory(ECM)

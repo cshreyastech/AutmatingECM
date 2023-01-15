@@ -13,6 +13,6 @@ if(spdlog_FOUND)
   set(spdlog_INCLUDE_DIRS  
   ${spdlog_INCLUDE_DIR})
 
-  set(spdlog_INCLUDE_DIRS_PS  
-  ${spdlog_INCLUDE_DIR} PARENT_SCOPE)
+  # set(spdlog_INCLUDE_DIRS_PS  
+  # ${spdlog_INCLUDE_DIR} PARENT_SCOPE)
 endif()

@@ -13,6 +13,6 @@ if(Eigen3_FOUND)
   set(Eigen3_INCLUDE_DIRS  
   ${Eigen3_INCLUDE_DIR})
 
-  set(Eigen3_INCLUDE_DIRS_PS
-  ${Eigen3_INCLUDE_DIR} PARENT_SCOPE)
+  # set(Eigen3_INCLUDE_DIRS_PS
+  # ${Eigen3_INCLUDE_DIR} PARENT_SCOPE)
 endif()

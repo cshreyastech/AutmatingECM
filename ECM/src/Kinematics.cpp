@@ -103,7 +103,8 @@ void Kinematics::TestIK()
     if(ambfWrapper_->IsActive(RigidBodyID::TARGETIK)) 
     {
       Matrix4f T_4_w = T_0_w * T_4_0;
-      
+      std::cout << "T_4_w\n" << T_4_w << std::endl;
+
       ambfWrapper_->P_N_W(RigidBodyID::TARGETIK, T_4_w.block<3,1>(0,3));
 
       Vector3f R_4_w_rpy = utilities.RPYfromRotation(T_4_w.block<3,3>(0,0));
@@ -115,8 +116,8 @@ void Kinematics::TestIK()
     // std::cout << "desired: " <<  desiredQ[0] << ", " <<  desiredQ[1] << ", " <<  
     //                              desiredQ[2] << ", " <<  desiredQ[3] << std::endl;
 
-    // std::cout << "cal    : " << computedQ[0] << ", " << computedQ[1] << ", " << 
-    //                             computedQ[2] << ", " << computedQ[3] << std::endl;
+    std::cout << "cal    : " << computedQs[0] << ", " << computedQs[1] << ", " << 
+                                computedQs[2] << ", " << computedQs[3] << std::endl;
     // std::cout << "diff   : "
     //           << std::roundf(desiredQ[0] - computedQ[0]) << ", "
     //           << std::roundf(desiredQ[1] - computedQ[1]) << ", "

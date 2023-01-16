@@ -19,9 +19,9 @@ set(ECM_HRD_DIR
 SET ( ECM_CONTROL_SOURCE_FILES
 src/Kinematics.cpp
 src/DH.cpp
-# src/Dynamics.cpp
-# src/PathPlanning.cpp
-# src/Control.cpp
+src/Dynamics.cpp
+src/PathPlanning.cpp
+src/Control.cpp
 src/AMBFWrapper.cpp
 src/Utilities.cpp
 src/AutomatingECM.cpp

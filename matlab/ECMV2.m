@@ -123,7 +123,7 @@ function ECM
         J_W_w1_square + J_W_w2_square + J_W_w3_square + J_W_w4_square);
 
 %     4x4
-    M = simplify(M_syms(n));
+    M = simplify(M_syms(n), 'Steps', 25);
 % Check Mass Matrix properties
 % M12_21_equal = isequal((M(1, 2)), (M(2, 1)))
 % M13_31_equal = isequal(simplify(M(1, 3)), simplify(M(3, 1)))
@@ -148,28 +148,14 @@ function ECM
     for i = 1:4
         for j = 1:4
             for k = 1:4
-                val = 1/2 * (diff(M(i, j), qs(k)) * qds(k) + ...
-                                 diff(M(i, k), qs(j)) * qds(j)- ...
-                                 diff(M(j, k), qs(i)) * qds(i)) * qds(k);
+                val = 1/2 * (diff(M(i, j), qs(k)) + ...
+                                 diff(M(i, k), qs(j)) - ...
+                                 diff(M(j, k), qs(i))) * qds(k);
                 a(1, 1, k) = val;
             end
             V(i, j) = sum(a(:));
         end
     end
-
-% Does not validate skew symmetry property. Reference Robot modeling and
-% control book
-%     for i = 1:4
-%         for j = 1:4
-%             for k = 1:4
-%                 val = 1/2 * (diff(M(k, j), qs(j)) * qds(j) + ...
-%                                  diff(M(k, i), qs(j)) * qds(j)- ...
-%                                  diff(M(i, j), qs(k)) * qds(k)) * qds(i);
-%                 a(1, 1, k) = val;
-%             end
-%             V(i, j) = sum(a(:));
-%         end
-%     end
 
     % validate skew symmetry property. Refernce Mathematical Introduction
     % to Robotic manipulation. Results matches with results w.r.t Standford
@@ -186,7 +172,7 @@ function ECM
 %         end
 %     end
 %     isequal(V, V_)
-%     %% Verify Skew Symmetry and Passivity Properites
+    %% Verify Skew Symmetry and Passivity Properites
 % dM = diff(M, q1) * qd1 + diff(M, q2) * qd2 + diff(M, q3) * qd3 + diff(M, q4) * qd4;
 % 
 % N = simplify(dM - 2*V);
@@ -200,6 +186,46 @@ function ECM
 % 
 % N34_43_equal = isequal(N(3, 4), -N(4, 3))
 
+
+    
+   syms F(n);
+   F(n) = (V * qds);
+   F = simplify(F(n), 'steps', 25);
+   F = expand(F);
+
+   [c,t] = coeffs(evalin(symengine,[ char(F(1)) ]),[qd1, qd2, qd3, qd4]); 
+   F1_result = [c;t].';
+
+[c,t] = coeffs(evalin(symengine,[ char(F(2)) ]),[qd1,qd2, qd3, qd4]); 
+F2_result = [c;t].';
+
+[c,t] = coeffs(evalin(symengine,[ char(F(3)) ]),[qd1,qd2, qd3, qd4]); 
+F3_result = [c;t].';
+% 
+% [c,t] = coeffs(evalin(symengine,[ char(F(4)) ]),[qd1,qd2, qd3, qd4]); 
+% F4_result = [c;t].' 
+
+%% Centrifugal and Coriolis forces
+syms C_syms(n) B_syms(n);
+C_syms(n) = [ 
+                  0,               0, 0, 0; 
+    F2_result(1, 1),               0, 0, 0; 
+    F3_result(1, 1), F3_result(2, 1), 0, 0; 
+                  0,               0, 0, 0;
+    ];
+
+
+C = C_syms(n);
+C = simplify(C, 'Steps', 25);
+
+B_syms(n) = [ 
+    F1_result(1 , 1), F1_result(2, 1), 0,               0, 0, 0; 
+                   0,               0, 0, F2_result(2, 1), 0, 0; 
+                   0,               0, 0,               0, 0, 0; 
+                   0,               0, 0,               0, 0, 0;
+    ];
+B = B_syms(n);
+B = simplify(B, 'Steps', 25);
 
 qd_centrifugal = [
     qd1^2;
@@ -216,6 +242,14 @@ qd_coriolis = [
     qd3 * qd4;
     ];
 
+F_ = simplify(C * qd_centrifugal + B * qd_coriolis, 'steps', 25);
+F_ = expand(F_);
+% isequal (F_(1), F(1))
+% isequal (F_(2), F(2))
+% isequal (F_(3), F(3))
+% isequal (F_(4), F(4))
+
+
 
 %% Calculation of Torque
     syms g;
@@ -224,14 +258,19 @@ qd_coriolis = [
         - transpose(J_W_v2) * [ 0; 0; -m2 * g; ] ...
         - transpose(J_W_v3) * [ 0; 0; -m3 * g; ] ...
         - transpose(J_W_v4) * [ 0; 0; -m4 * g; ] ...
-    );
+        , 'Steps', 25)
+    size(G_W)
 qdds = [
     qdd1;
     qdd2;
     qdd3;
     qdd4;
     ];
-    T = M * qdds + V + G_W
+% 
+%     
+%     T = simplify(M * qdds + F + G_W,'Steps',25);
+T = simplify(expand(M * qdds + ...
+    C * qd_centrifugal + B * qd_coriolis + G_W), 'Steps', 25);
 
 end
 %%
@@ -259,3 +298,5 @@ function T_N_Nplus1 = DH_Modified(alpha, a, theta, d, offset, joint_type, round_
          ];
 end
     
+
+% function coeff = extractCoeff(expression, )
